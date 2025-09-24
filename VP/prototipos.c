@@ -11,6 +11,7 @@ typedef enum {CANTOR, DUPLA, BANDA, GRUPO} TipoArtista;
 typedef enum {VERMELHO, PRETO} Cor;
 
 typedef struct artista{
+    TipoArtista tipo;
     char nome[50], estiloMusical[50];
     int numeroAlbuns;
     struct arvore *albuns;
