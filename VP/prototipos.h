@@ -41,4 +41,12 @@ typedef struct arvore{
     struct arvore *esq, *dir;
 }Arvore;
 
+Arvore *inicializar();
+Musica *inicializarM();
+
+Arvore *alocar(TipoDado tipo);
+Musica *alocarM();
+
+
+
 #endif
