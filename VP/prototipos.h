@@ -50,9 +50,10 @@ typedef struct arvore {
 Arvore *inicializar();
 Musica *inicializarM();
 
-// Alocação
+// Alocação e preenchimento
 Arvore *alocarTree(TipoDado tipo);
 Musica *alocarMusic();
+void preencherNo(Arvore *no);
 
 // Balanceamento
 void rotacionarEsquerda(Arvore **raiz);
