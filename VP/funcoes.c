@@ -22,6 +22,41 @@ Arvore *alocarTree(TipoDado tipo){
     return (no);
 }
 
+void preencherNo(Arvore *no) {
+    if(no != NULL){
+        if(no->tipo == ARTISTA) {
+            printf("\n=== Cadastro de Artista ===\n");
+
+            printf("Nome do artista: ");
+            scanf(" %[^\n]", no->dado.ARTISTA.nome);
+
+            printf("Estilo musical: ");
+            scanf(" %[^\n]", no->dado.ARTISTA.estiloMusical);
+
+            printf("Tipo (0-Cantor, 1-Dupla, 2-Banda, 3-Grupo): ");
+            int t;
+            scanf("%d", &t);
+            no->dado.ARTISTA.tipo = (TipoArtista)t;
+
+            no->dado.ARTISTA.numeroAlbuns = 0;
+            no->dado.ARTISTA.albuns = inicializar();  
+        }
+        else if(no->tipo == ALBUM) {
+            printf("\n=== Cadastro de Álbum ===\n");
+
+            printf("Título do álbum: ");
+            scanf(" %[^\n]", no->dado.ALBUM.titulo);
+
+            printf("Ano de lançamento: ");
+            scanf("%d", &no->dado.ALBUM.anoLancamento);
+
+            no->dado.ALBUM.numeroMusicas = 0;
+            no->dado.ALBUM.musicas = inicializarM();  
+        }
+    }
+}
+
+
 Musica *alocarMusic(){
     Musica *no = (Musica*)malloc(sizeof(Musica));
     if(!no) return NULL;
@@ -66,4 +101,17 @@ void balanceamento(Arvore **raiz){
     }
 }
 
-void inser
+void inserirArvRubroNegra(Arvore **raiz, Arvore *novoNo){
+    if (raiz == NULL){
+        raiz = &novoNo;
+    }
+    else {
+        if(strcmp(novoNo->dado.ARTISTA.nome, (*raiz)->dado.ARTISTA.nome) < 0) {
+            inserirArvRubroNegra(&(*raiz)->esq, novoNo);
+        } else {
+            inserirArvRubroNegra(&(*raiz)->dir, novoNo);
+        }
+    } 
+
+    balanceamento(raiz);
+}
