@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "prototipos.h"
+#include <ctype.h>
+#include <string.h>
+#include <time.h>
 
+#include "prototipos.h"
 
 // Inicialização, Alocação e Utilitários
 Arvore *inicializar(){
@@ -29,9 +32,11 @@ void preencherNo(Arvore *no) {
 
             printf("Nome do artista: ");
             scanf(" %[^\n]", no->dado.ARTISTA.nome);
+            deixarMaiusculo(no->dado.ARTISTA.nome);
 
             printf("Estilo musical: ");
             scanf(" %[^\n]", no->dado.ARTISTA.estiloMusical);
+            deixarMaiusculo(no->dado.ARTISTA.estiloMusical);
 
             printf("Tipo (0-Cantor, 1-Dupla, 2-Banda, 3-Grupo): ");
             int t;
@@ -46,13 +51,28 @@ void preencherNo(Arvore *no) {
 
             printf("Título do álbum: ");
             scanf(" %[^\n]", no->dado.ALBUM.titulo);
+            deixarMaiusculo(no->dado.ALBUM.titulo);
 
             printf("Ano de lançamento: ");
             scanf("%d", &no->dado.ALBUM.anoLancamento);
+            deixarMaiusculo(no->dado.ALBUM.titulo);
 
             no->dado.ALBUM.numeroMusicas = 0;
             no->dado.ALBUM.musicas = inicializarM();  
         }
+    }
+}
+
+void preencherMusic(Musica *musica) {
+    if(musica != NULL){
+        printf("\n=== Cadastro de Música ===\n");
+
+        printf("Título da música: ");
+        scanf(" %[^\n]", musica->titulo);
+        deixarMaiusculo(musica->titulo);
+
+        printf("Duração (em minutos): ");
+        scanf("%d", &musica->minutos);
     }
 }
 
@@ -65,7 +85,7 @@ Musica *alocarMusic(){
     return (no);
 }
 
-void deixaMaiuscula(char *str){
+void deixarMaiuscula(char *str){
     for(int i=0; str[i]!='\0'; i++) str[i] = toupper((unsigned char) str[i]);
 }
 
@@ -217,6 +237,7 @@ Album *buscarAlbumDeArtista(Arvore *raiz, char *nomeArtista, char *tituloAlbum){
         Arvore *album = buscarArvRubroNegra(artista->dado.ARTISTA.albuns, tituloAlbum);
         if(album != NULL && album->tipo == ALBUM){
             album = &album->dado.ALBUM;
+        }
     }
     return (album);
 }
@@ -228,6 +249,7 @@ Musica *buscarMusicaDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum, 
         Musica *musica = buscarMusica(album->musicas, tituloMusica);
         if(musica != NULL){
             musica = &musica;
+        }
     }
     return (musica);
 }
@@ -240,9 +262,6 @@ Musica *buscarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusic
         while(albumNo != NULL){
             if(albumNo->tipo == ALBUM){
                 Musica *musica = buscarMusica(albumNo->dado.ALBUM.musicas, tituloMusica);
-                if(musica != NULL){
-                    musica = &musica;
-                }
             }
             albumNo = albumNo->esq; 
             albumNo = albumNo->dir; 
@@ -253,7 +272,7 @@ Musica *buscarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusic
 
 Artista *buscarArtistasPorEstilo(Arvore *raiz, char *estilo){
     if (raiz){
-        Artista *resultado = NULL;
+        Arvore *resultado = NULL;
         if (raiz->tipo == ARTISTA && strcmp(raiz->dado.ARTISTA.estiloMusical, estilo) == 0) {
             resultado = &raiz->dado.ARTISTA;
         }
@@ -261,15 +280,12 @@ Artista *buscarArtistasPorEstilo(Arvore *raiz, char *estilo){
         Artista *esqResultado = buscarArtistasPorEstilo(raiz->esq, estilo);
         Artista *dirResultado = buscarArtistasPorEstilo(raiz->dir, estilo);
 
-        if (esqResultado) return esqResultado;
-        if (dirResultado) return dirResultado;
-
+        inserirArvRubroNegra(&resultado, esqResultado);
+        inserirArvRubroNegra(&resultado, dirResultado);
+        
         return resultado;
-
     }
 }
-
-
 
 // Remoção int removerArvRubroNegra(Arvore **raiz, char *nome); // aqui vem a remover da rubro negra
 int removerMusic(Musica **lista, char titulo[]){
@@ -337,4 +353,98 @@ void imprimirMusics(Musica *lista){
     } else {
         printf("Nenhuma música cadastrada.\n");
     }
+}
+
+void mostrarArtistas(Arvore *no, char *estilo){
+    if(no != NULL){
+        mostrarArtistas(no->esq, estilo);
+        if(no->tipo == ARTISTA && strcmp(no->dado.ARTISTA.estiloMusical, estilo) == 0)
+            printf("Nome: %s\n", no->dado.ARTISTA.nome);
+        mostrarArtistas(no->dir, estilo);
+    }
+}
+
+void listarMusicas(Arvore *no) {
+    if (no == NULL) return;
+    listarMusicas(no->esq);
+    if (no->tipo == ALBUM)
+        imprimirMusics(no->dado.ALBUM.musicas);
+    listarMusicas(no->dir);
+}
+
+
+void mostrarAlbunsDeArtista(Arvore *raiz, char *nomeArtista){
+    Arvore *artista = buscarArvRubroNegra(raiz, nomeArtista);
+    if(artista != NULL && artista->tipo == ARTISTA){
+        printf("\n=== Álbuns de %s ===\n", artista->dado.ARTISTA.nome);
+        imprimirArvRubroNegra(artista->dado.ARTISTA.albuns);
+    } else {
+        printf("Artista não encontrado.\n");
+    }
+}
+
+void mostrarMusicasDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum){
+    Album *album = buscarAlbumDeArtista(raiz, nomeArtista, tituloAlbum);
+    if(album != NULL){
+        printf("\n=== Músicas do Álbum %s ===\n", album->titulo);
+        imprimirMusics(album->musicas);
+    } else {
+        printf("Álbum ou artista não encontrado.\n");
+    }
+}
+
+void mostrarMusicasDeArtista(Arvore *raiz, char *nomeArtista){
+    Arvore *artista = buscarArvRubroNegra(raiz, nomeArtista);
+    if(artista != NULL && artista->tipo == ARTISTA){
+        albumNo = mostrarMusicasDeArtista(albumNo->esq, nomeArtista);
+        printf("\n=== Músicas de %s ===\n", artista->dado.ARTISTA.nome);
+        Arvore *albumNo = artista->dado.ARTISTA.albuns;
+        while(albumNo != NULL){
+            if(albumNo->tipo == ALBUM){
+                printf("\n--- Álbum: %s ---\n", albumNo->dado.ALBUM.titulo);
+                imprimirMusics(albumNo->dado.ALBUM.musicas);
+            }
+ 
+            albumNo = mostrarMusicasDeArtista(albumNo->dir, nomeArtista);
+        }
+    } else {
+        printf("Artista não encontrado.\n");
+    }
+}
+
+
+void mostrarArtistasPorEstilo(Arvore *raiz, char *estilo){
+    printf("\n=== Artistas do estilo %s ===\n", estilo);
+    mostrarArtistas(raiz, estilo);
+}
+
+
+void liberarMusicas(Musica *lista){
+    Musica *aux;
+    while(lista != NULL){
+        aux = lista;
+        lista = lista->prox;
+        free(aux);
+    }
+}
+
+void liberarArvore(Arvore *raiz){
+    if(raiz != NULL){
+        liberarArvore(raiz->esq);
+        liberarArvore(raiz->dir);
+        if(raiz->tipo == ARTISTA){
+            liberarArvore(raiz->dado.ARTISTA.albuns);
+        } else if(raiz->tipo == ALBUM){
+            liberarMusicas(raiz->dado.ALBUM.musicas);
+        }
+        free(raiz);
+    }
+}
+
+void liberarTempo(struct tm *tempo){
+    if(tempo) free(tempo);
+}
+
+void liberarString(char *str){
+    if(str) free(str);
 }

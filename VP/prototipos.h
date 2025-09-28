@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+#include <string.h>
 #include <time.h>
 
 struct artista;
@@ -49,13 +51,14 @@ typedef struct arvore {
 // Inicialização e Utilitários
 Arvore *inicializar();
 Musica *inicializarM();
-void deixaMaiuscula(char *str);
+void deixarMaiuscula(char *str);
 struct tm *tempoAtual();
 
 // Alocação e preenchimento
 Arvore *alocarTree(TipoDado tipo);
 Musica *alocarMusic();
 void preencherNo(Arvore *no);
+void preencherMusic(Musica *musica);
 
 // Balanceamento
 void rotacionarEsquerda(Arvore **raiz);
@@ -82,6 +85,7 @@ int removerMusic(Musica **lista, char *titulo);
 // Impressão
 void imprimirArvRubroNegra(Arvore *raiz);
 void imprimirMusics(Musica *lista);
+void listarMusicas(Arvore *no)
     //funções de mostrar especificas
     void mostrarAlbunsDeArtista(Arvore *raiz, char *nomeArtista);
     void mostrarMusicasDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum);
