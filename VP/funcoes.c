@@ -211,21 +211,63 @@ void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes){
 }
 
 Album *buscarAlbumDeArtista(Arvore *raiz, char *nomeArtista, char *tituloAlbum){
+    Album *album = NULL;
     Arvore *artista = buscarArvRubroNegra(raiz, nomeArtista);
     if(artista != NULL && artista->tipo == ARTISTA){
         Arvore *album = buscarArvRubroNegra(artista->dado.ARTISTA.albuns, tituloAlbum);
         if(album != NULL && album->tipo == ALBUM){
-            printf("Álbum '%s' encontrado para o artista '%s'.\n", tituloAlbum, nomeArtista);
-            return &album->dado.ALBUM;
-        } else {
-            printf("Álbum '%s' não encontrado para o artista '%s'.\n", tituloAlbum, nomeArtista);
-        }
-    } else {
-        printf("Artista '%s' não encontrado.\n", nomeArtista);
+            album = &album->dado.ALBUM;
     }
+    return (album);
 }
 
+Musica *buscarMusicaDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum, char *tituloMusica){
+    Musica *musica = NULL;
+    Album *album = buscarAlbumDeArtista(raiz, nomeArtista, tituloAlbum);
+    if(album != NULL){
+        Musica *musica = buscarMusica(album->musicas, tituloMusica);
+        if(musica != NULL){
+            musica = &musica;
+    }
+    return (musica);
+}
 
+Musica *buscarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusica){
+    Musica *musica = NULL;
+    Arvore *artista = buscarArvRubroNegra(raiz, nomeArtista);
+    if(artista != NULL && artista->tipo == ARTISTA){
+        Arvore *albumNo = artista->dado.ARTISTA.albuns;
+        while(albumNo != NULL){
+            if(albumNo->tipo == ALBUM){
+                Musica *musica = buscarMusica(albumNo->dado.ALBUM.musicas, tituloMusica);
+                if(musica != NULL){
+                    musica = &musica;
+                }
+            }
+            albumNo = albumNo->esq; 
+            albumNo = albumNo->dir; 
+        }
+    }
+    return (musica);
+}
+
+Artista *buscarArtistasPorEstilo(Arvore *raiz, char *estilo){
+    if (raiz){
+        Artista *resultado = NULL;
+        if (raiz->tipo == ARTISTA && strcmp(raiz->dado.ARTISTA.estiloMusical, estilo) == 0) {
+            resultado = &raiz->dado.ARTISTA;
+        }
+
+        Artista *esqResultado = buscarArtistasPorEstilo(raiz->esq, estilo);
+        Artista *dirResultado = buscarArtistasPorEstilo(raiz->dir, estilo);
+
+        if (esqResultado) return esqResultado;
+        if (dirResultado) return dirResultado;
+
+        return resultado;
+
+    }
+}
 
 
 
