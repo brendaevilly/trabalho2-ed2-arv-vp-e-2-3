@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <string.h>
 #include <time.h>
 
 struct artista;
@@ -48,58 +47,60 @@ typedef struct arvore {
     struct arvore *esq, *dir;
 } Arvore;
 
-// Inicialização e Utilitários
+/* --- Inicialização e Utilitários --- */
 Arvore *inicializar();
 Musica *inicializarM();
-void deixarMaiuscula(char *str);
+void deixarMaiusculo(char *str);
 struct tm *tempoAtual();
 
-// Alocação e preenchimento
+/* --- Alocação e preenchimento --- */
 Arvore *alocarTree(TipoDado tipo);
-Musica *alocarMusic();
+Musica *alocarMusica();
 void preencherNo(Arvore *no);
-void preencherMusic(Musica *musica);
+void preencherMusica(Musica *musica);
 
-// Balanceamento
+/* --- Balanceamento --- */
 void rotacionarEsquerda(Arvore **raiz);
 void rotacionarDireita(Arvore **raiz);
 void trocaCor(Arvore **raiz);
 void balanceamento(Arvore **raiz);
 
-// Inserção
+/* --- Inserção --- */
 int inserirArvRubroNegra(Arvore **raiz, Arvore *novoNo);
-void inserirMusica(Musica **lista, Musica novaMusica);
+int inserirMusica(Musica **lista, Musica novaMusica);
 
-// Busca 
+/* --- Busca --- */
 Arvore *buscarArvRubroNegra(Arvore *raiz, char *nome);
-Musica *buscarMusic(Musica *lista, char *titulo);
+Musica *buscarMusica(Musica *lista, char *titulo);
 Album *buscarAlbumDeArtista(Arvore *raiz, char *nomeArtista, char *tituloAlbum);
-Musica buscarMusicaDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum, char *tituloMusica);
-Musica buscarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusica);
-Artista buscarArtistasPorEstilo(Arvore *raiz, char *estilo);
+Musica *buscarMusicaDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum, char *tituloMusica);
+Musica *buscarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusica);
+Musica *buscarMusicaEmAlbuns(Arvore *albuns, char *titulo); /* procura em todos os álbuns de uma árvore de ALBUMs */
 
-// Remoção 
+/* --- Remoção --- */
 int removerArvRubroNegra(Arvore **raiz, char *nome);
-int removerMusic(Musica **lista, char *titulo);
+int removerMusica(Musica **lista, char *titulo);
 
-// Impressão
+/* --- Impressão e mostrar específicas --- */
 void imprimirArvRubroNegra(Arvore *raiz);
-void imprimirMusics(Musica *lista);
-void listarMusicas(Arvore *no)
-    //funções de mostrar especificas
-    void mostrarAlbunsDeArtista(Arvore *raiz, char *nomeArtista);
-    void mostrarMusicasDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum);
-    void mostrarArtistasPorEstilo(Arvore *raiz, char *estiloMusical);
-    void mostrarMusicasDeArtista(Arvore *raiz, char *nomeArtista);
-    void mostrarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusica);
+void imprimirMusicas(Musica *lista);
+void listarMusicas(Arvore *no);
+void mostrarAlbunsDeArtista(Arvore *raiz, char *nomeArtista);
+void mostrarMusicasDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum);
+void mostrarArtistasPorEstilo(Arvore *raiz, char *estiloMusical);
+void mostrarMusicasDeArtista(Arvore *raiz, char *nomeArtista);
+void mostrarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusica);
 
-// Experimento
+/* --- Experimento --- */
 void experimentoBusca30(Arvore *raiz);
 
-// Utilitários 
+/* --- Utilitários --- */
 void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes);
 void liberarMusicas(Musica *lista);
 void liberarAlbuns(Arvore *albuns);
 void liberarArtistas(Arvore *raiz);
+void liberarArvore(Arvore *raiz);
+void liberarTempo(struct tm *tempo);
+void liberarString(char *str);
 
 #endif

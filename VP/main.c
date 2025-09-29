@@ -40,9 +40,9 @@ int main(){
                 if(novoArtista != NULL){
                     preencherNo(novoArtista);
                     if(inserirArvRubroNegra(&biblioteca, novoArtista))
-                        printf("\n✅ Artista cadastrado com sucesso!\n");
+                        printf("\n Artista cadastrado com sucesso!\n");
                     else
-                        printf("\n❌ Erro ao cadastrar artista.\n");
+                        printf("\n Erro ao cadastrar artista.\n");
                 }
                 break;
             }
@@ -60,13 +60,13 @@ int main(){
                         preencherNo(novoAlbum);
                         if(inserirArvRubroNegra(&artista->dado.ARTISTA.albuns, novoAlbum)){
                             artista->dado.ARTISTA.numeroAlbuns++;
-                            printf("\n✅ Álbum cadastrado com sucesso!\n");
+                            printf("\n Álbum cadastrado com sucesso!\n");
                         } else {
-                            printf("\n❌ Erro ao cadastrar álbum.\n");
+                            printf("\n Erro ao cadastrar álbum.\n");
                         }
                     }
                 } else {
-                    printf("\n❌ Artista não encontrado!\n");
+                    printf("\n Artista não encontrado!\n");
                 }
                 break;
             }
@@ -84,15 +84,15 @@ int main(){
                 Album *album = buscarAlbumDeArtista(biblioteca, nomeArtista, tituloAlbum);
                 if(album != NULL){
                     Musica novaMusica;
-                    preencherMusic(&novaMusica);
-                    if(inserirMusic(&album->musicas, novaMusica)){
+                    preencherMusica(&novaMusica);
+                    if(inserirMusica(&album->musicas, novaMusica)){
                         album->numeroMusicas++;
-                        printf("\n✅ Música cadastrada com sucesso!\n");
+                        printf("\n Música cadastrada com sucesso!\n");
                     } else {
-                        printf("\n❌ Erro ao cadastrar música.\n");
+                        printf("\n Erro ao cadastrar música.\n");
                     }
                 } else {
-                    printf("\n❌ Álbum ou artista não encontrado!\n");
+                    printf("\n Álbum ou artista não encontrado!\n");
                 }
                 break;
             }
@@ -138,9 +138,9 @@ int main(){
                 scanf(" %[^\n]", nome);
                 deixarMaiusculo(nome);
                 int comparacoes = 0;
-                printf("\n🧭 Caminho da busca:\n");
+                printf("\n Caminho da busca:\n");
                 mostrarCaminhoBusca(biblioteca, nome, &comparacoes);
-                printf("🔍 Comparações realizadas: %d\n", comparacoes);
+                printf(" Comparações realizadas: %d\n", comparacoes);
                 break;
             }
 
@@ -150,14 +150,15 @@ int main(){
                 scanf(" %[^\n]", nomeArtista);
                 deixarMaiusculo(nomeArtista);
                 printf("Digite o título da música: ");
-                scanf(" %[^\n]", tituloMusica);
+                scanf(" %[^\n]", tituloMusica); 
                 deixarMaiusculo(tituloMusica);
-
+                
                 Musica *musica = buscarMusicaDeArtista(biblioteca, nomeArtista, tituloMusica);
+
                 if(musica){
-                    printf("\n🎵 Música encontrada: %s (%d min)\n", musica->titulo, musica->minutos);
+                    printf("\n Música encontrada: %s (%d min)\n", musica->titulo, musica->minutos);
                 } else {
-                    printf("\n❌ Música não encontrada.\n");
+                    printf("\n Música não encontrada.\n");
                 }
                 break;
             }
@@ -176,12 +177,13 @@ int main(){
 
                 Musica *musica = buscarMusicaDeAlbum(biblioteca, nomeArtista, tituloAlbum, tituloMusica);
                 if(musica){
-                    printf("\n🎵 Música encontrada: %s (%d min)\n", musica->titulo, musica->minutos);
+                    printf("\n Música encontrada: %s (%d min)\n", musica->titulo, musica->minutos);
                 } else {
-                    printf("\n❌ Música não encontrada.\n");
+                    printf("\n Música não encontrada.\n");
                 }
                 break;
             }
+
 
             case 11: { // MOSTRAR ARTISTAS POR ESTILO
                 char estilo[50];
@@ -206,24 +208,24 @@ int main(){
 
                 Album *album = buscarAlbumDeArtista(biblioteca, nomeArtista, tituloAlbum);
                 if(album != NULL){
-                    if(removerMusic(&album->musicas, tituloMusica)){
+                    if(removerMusica(&album->musicas, tituloMusica)){
                         album->numeroMusicas--;
-                        printf("\n🗑️ Música removida com sucesso!\n");
+                        printf("\n Música removida com sucesso!\n");
                     } else {
-                        printf("\n❌ Música não encontrada.\n");
+                        printf("\n Música não encontrada.\n");
                     }
                 } else {
-                    printf("\n❌ Álbum ou artista não encontrado.\n");
+                    printf("\n Álbum ou artista não encontrado.\n");
                 }
                 break;
             }
 
             case 0:
-                printf("\n👋 Encerrando o programa...\n");
+                printf("\n Encerrando o programa...\n");
                 break;
 
             default:
-                printf("\n⚠️ Opção inválida!\n");
+                printf("\n Opção inválida!\n");
         }
 
     } while(opcao != 0);
