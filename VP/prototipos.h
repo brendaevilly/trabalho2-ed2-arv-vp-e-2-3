@@ -72,7 +72,7 @@ int inserirMusica(Musica **lista, Musica novaMusica);
 /* --- Busca --- */
 Arvore *buscarArvRubroNegra(Arvore *raiz, char *nome);
 Musica *buscarMusica(Musica *lista, char *titulo);
-Album *buscarAlbumDeArtista(Arvore *raiz, char *nomeArtista, char *tituloAlbum);
+Arvore *buscarAlbumDeArtista(Arvore *raiz, char *tituloAlbum);
 Musica *buscarMusicaDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum, char *tituloMusica);
 Musica *buscarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusica);
 Musica *buscarMusicaEmAlbuns(Arvore *albuns, char *titulo); /* procura em todos os álbuns de uma árvore de ALBUMs */
@@ -86,7 +86,7 @@ void imprimirArvRubroNegra(Arvore *raiz);
 void imprimirMusicas(Musica *lista);
 void listarMusicas(Arvore *no);
 void mostrarAlbunsDeArtista(Arvore *raiz, char *nomeArtista);
-void mostrarMusicasDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum);
+void mostrarMusicasDeAlbum(Arvore *raiz);
 void mostrarArtistasPorEstilo(Arvore *raiz, char *estiloMusical);
 void mostrarMusicasDeArtista(Arvore *raiz, char *nomeArtista);
 void mostrarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusica);

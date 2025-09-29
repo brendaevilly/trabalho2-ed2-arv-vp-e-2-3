@@ -132,7 +132,7 @@ void rotacionarDireita(Arvore **raiz){
 }
 
 void trocaCor(Arvore **raiz){
-    if(raiz != NULL || *raiz != NULL){
+    if(raiz != NULL && *raiz != NULL){
         if((*raiz)->esq && (*raiz)->dir &&
         (*raiz)->esq->cor == VERMELHO && (*raiz)->dir->cor == VERMELHO){
             (*raiz)->cor = VERMELHO;
@@ -143,21 +143,29 @@ void trocaCor(Arvore **raiz){
 }
 
 
-void balanceamento(Arvore **raiz){
-    if(raiz != NULL || *raiz != NULL){
+void balanceamento(Arvore **raiz) {
+    if (raiz != NULL && *raiz != NULL) {
 
-        if((*raiz)->dir && (*raiz)->dir->cor == VERMELHO &&
-        (!(*raiz)->esq || (*raiz)->esq->cor == PRETO)) {
+        // Caso 1: rotação à esquerda se nó direito é vermelho e esquerdo é preto
+        if ((*raiz)->dir != NULL && (*raiz)->dir->cor == VERMELHO &&
+            ((*raiz)->esq == NULL || (*raiz)->esq->cor == PRETO)) {
             rotacionarEsquerda(raiz);
         }
-        if(((*raiz)->esq->cor == VERMELHO) && ((*raiz)->esq->esq->cor == VERMELHO)){
+
+        // Caso 2: rotação à direita se há dois vermelhos seguidos à esquerda
+        if ((*raiz)->esq != NULL && (*raiz)->esq->cor == VERMELHO &&
+            (*raiz)->esq->esq != NULL && (*raiz)->esq->esq->cor == VERMELHO) {
             rotacionarDireita(raiz);
         }
-        if(((*raiz)->esq->cor == VERMELHO) && ((*raiz)->dir->cor == VERMELHO)){
+
+        // Caso 3: troca de cores se ambos os filhos são vermelhos
+        if ((*raiz)->esq != NULL && (*raiz)->dir != NULL &&
+            (*raiz)->esq->cor == VERMELHO && (*raiz)->dir->cor == VERMELHO) {
             trocaCor(raiz);
         }
     }
 }
+
 
 int inserirArvRubroNegra(Arvore **raiz, Arvore *novoNo){
     int inseriu = 0;
@@ -183,19 +191,22 @@ int inserirArvRubroNegra(Arvore **raiz, Arvore *novoNo){
 
 int inserirMusica(Musica **lista, Musica novaMusica){
     Musica *novoNo = alocarMusica();
-    if(!novoNo) return 0;
-    *novoNo = novaMusica;
-
-    if(*lista == NULL){
-        *lista = novoNo;
-    } else {
-        Musica *aux = *lista;
-        while(aux->prox != NULL){
-            aux = aux->prox;
+    if(novoNo){
+        *novoNo = novaMusica;
+        if(*lista == NULL){
+            *lista = novoNo;
+        } else {
+            Musica *aux = *lista;
+            while(aux->prox != NULL){
+                aux = aux->prox;
+            }
+            aux->prox = novoNo;
         }
-        aux->prox = novoNo;
+    } else {
+        printf("Erro ao alocar memória para a música!\n");
+        exit(1);
     }
-    return 1;
+        return 1;
 }
 
 // Busca
@@ -209,6 +220,9 @@ Arvore *buscarArvRubroNegra(Arvore *raiz, char *nome){
         } else {
             return buscarArvRubroNegra(raiz->dir, nome);
         }
+    } else {
+        printf("ERROR!");
+        return NULL; 
     }
 }
 
@@ -244,17 +258,40 @@ void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes){
     }
 }
 
-Album *buscarAlbumDeArtista(Arvore *raiz, char *nomeArtista, char *tituloAlbum){
+/*Arvore *buscarAlbumDeArtista(Arvore *raiz, char *nomeArtista, char *tituloAlbum){
     Album *album = NULL;
     Arvore *artista = buscarArvRubroNegra(raiz, nomeArtista);
     if(artista != NULL && artista->tipo == ARTISTA){
+        //Arvore *albumNo = artista->dado.ARTISTA.albuns;
         Arvore *albumNo = buscarArvRubroNegra(artista->dado.ARTISTA.albuns, tituloAlbum);
         if(albumNo != NULL && albumNo->tipo == ALBUM){
             album = &albumNo->dado.ALBUM;
+                }
+            } 
+    return (album);
+}*/
+
+Arvore *buscarAlbumDeArtista(Arvore *artista, char *tituloAlbum) {
+    if (artista == NULL || artista->tipo != ARTISTA) {
+        printf("Artista inválido ou não encontrado.\n");
+        return NULL;
+    }
+
+    Arvore *raizAlbuns = artista->dado.ARTISTA.albuns;
+    while (raizAlbuns != NULL) {
+        int comparacao = strcmp(tituloAlbum, raizAlbuns->dado.ALBUM.titulo);
+        if (comparacao == 0) {
+            return raizAlbuns;
+        } else if (comparacao < 0) {
+            raizAlbuns = raizAlbuns->esq;
+        } else {
+            raizAlbuns = raizAlbuns->dir;
         }
     }
-    return (album);
+
+    return NULL; // álbum não encontrado
 }
+
 
 Musica *buscarMusicaEmAlbuns(Arvore *albuns, char *titulo) {
     if(albuns == NULL) return NULL;
@@ -270,9 +307,9 @@ Musica *buscarMusicaEmAlbuns(Arvore *albuns, char *titulo) {
 
 Musica *buscarMusicaDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum, char *tituloMusica){
     Musica *musica = NULL;
-    Album *album = buscarAlbumDeArtista(raiz, nomeArtista, tituloAlbum);
+    Arvore *album = buscarAlbumDeArtista(raiz, tituloAlbum);
     if(album != NULL){
-        musica = buscarMusica(album->musicas, tituloMusica);
+        musica = buscarMusica(album->dado.ALBUM.musicas, tituloMusica);
     }
     return musica;
 }
@@ -398,11 +435,10 @@ void mostrarAlbunsDeArtista(Arvore *raiz, char *nomeArtista){
     }
 }
 
-void mostrarMusicasDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum){
-    Album *album = buscarAlbumDeArtista(raiz, nomeArtista, tituloAlbum);
+void mostrarMusicasDeAlbum(Arvore *album){
     if(album != NULL){
-        printf("\n=== Músicas do Álbum %s ===\n", album->titulo);
-        imprimirMusicas(album->musicas); /* nome correto */
+        printf("\n=== Músicas do Álbum %s ===\n", album->dado.ALBUM.titulo);
+        imprimirMusicas(album->dado.ALBUM.musicas);
     } else {
         printf("Álbum ou artista não encontrado.\n");
     }

@@ -90,24 +90,32 @@ int main(){
                 scanf(" %[^\n]", nomeArtista);
                 deixarMaiusculo(nomeArtista);
 
-                printf("Digite o título do álbum: ");
-                scanf(" %[^\n]", tituloAlbum);
-                deixarMaiusculo(tituloAlbum);
+                Arvore *artista = buscarArvRubroNegra(biblioteca, nomeArtista);
+                if (artista && artista->tipo == ARTISTA) {
+                    printf("Digite o título do álbum: ");
+                    scanf(" %[^\n]", tituloAlbum);
+                    deixarMaiusculo(tituloAlbum);
 
-                Album *album = buscarAlbumDeArtista(biblioteca, nomeArtista, tituloAlbum);
-                if(album != NULL){
-                    Musica novaMusica;
-                    preencherMusica(&novaMusica);
-                    if(inserirMusica(&album->musicas, novaMusica)){
-                        album->numeroMusicas++;
-                        printf("\n Música cadastrada com sucesso!\n");
+                    Arvore *album = buscarAlbumDeArtista(artista, tituloAlbum);
+                    if (album && album->tipo == ALBUM) {
+                        Musica *novaMusica = alocarMusica();
+                        if (novaMusica != NULL) {
+                            preencherMusica(novaMusica);
+                            if (inserirMusica(&album->dado.ALBUM.musicas, *novaMusica)) {
+                                album->dado.ALBUM.numeroMusicas++;
+                                printf("\n Música cadastrada com sucesso!\n");
+                            } else {
+                                printf("\n Erro ao cadastrar música.\n");
+                            }
+                        }
                     } else {
-                        printf("\n Erro ao cadastrar música.\n");
+                        printf("\n Álbum não encontrado.\n");
                     }
                 } else {
-                    printf("\n Álbum ou artista não encontrado!\n");
+                    printf("\n Artista não encontrado.\n");
                 }
                 break;
+
             }
 
             case 4: { // LISTAR ARTISTAS
@@ -125,14 +133,20 @@ int main(){
             }
 
             case 6: { // MOSTRAR MÚSICAS DE UM ÁLBUM
-                char nome[100], album[100];
+                char nome[100], nalbum[100];
                 printf("Digite o nome do artista: ");
                 scanf(" %[^\n]", nome);
                 deixarMaiusculo(nome);
-                printf("Digite o título do álbum: ");
-                scanf(" %[^\n]", album);
-                deixarMaiusculo(album);
-                mostrarMusicasDeAlbum(biblioteca, nome, album);
+                Arvore *artista = buscarArvRubroNegra(biblioteca, nome);
+                if (artista){
+                    if (artista && artista->tipo == ARTISTA){
+                        printf("Digite o título do álbum: ");
+                        scanf(" %[^\n]", nalbum);
+                        deixarMaiusculo(nalbum);
+                        Arvore *album = buscarAlbumDeArtista(artista, nalbum);
+                        mostrarMusicasDeAlbum(album);
+                } else {printf("Artista não encontnrado");}
+                }
                 break;
             }
 
@@ -219,10 +233,10 @@ int main(){
                 scanf(" %[^\n]", tituloMusica);
                 deixarMaiusculo(tituloMusica);
 
-                Album *album = buscarAlbumDeArtista(biblioteca, nomeArtista, tituloAlbum);
+                Arvore *album = buscarAlbumDeArtista(biblioteca, tituloAlbum);
                 if(album != NULL){
-                    if(removerMusica(&album->musicas, tituloMusica)){
-                        album->numeroMusicas--;
+                    if(removerMusica(&album->dado.ALBUM.musicas, tituloMusica)){
+                        album->dado.ALBUM.numeroMusicas--;
                         printf("\n Música removida com sucesso!\n");
                     } else {
                         printf("\n Música não encontrada.\n");
