@@ -49,10 +49,10 @@ void preencherNo(Arvore *no){
 
             int op = 0;
             while (op < 1 || op > 4) {
-                printf("Tipo (1 -Cantor, 2-Dupla, 3-Banda, 4-Grupo): ");
-                scanf("%d", &op);printf("\n");
+                printf("Tipo (1-Cantor, 2-Dupla, 3-Banda, 4-Grupo): ");
+                scanf("%d", &op); printf("\n");
             }
-            no->dado.ARTISTA.tipo = (TipoArtista) op;
+            no->dado.ARTISTA.TipArt = (TipoArtista) op;
 
             no->dado.ARTISTA.numeroAlbuns = 0;
             no->dado.ARTISTA.albuns = inicializar();  
@@ -286,21 +286,21 @@ Musica *buscarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusic
     return musica;
 }
 
-Artista *buscarArtistasPorEstilo(Arvore *raiz, char *estilo){
-    if (raiz){
-        Arvore *resultado = NULL;
+void buscarArtistasPorEstilo(Arvore *raiz, char *estilo) {
+    if (raiz != NULL){
+        deixarMaiusculo(estilo);
+        buscarArtistasPorEstilo(raiz->esq, estilo);
         if (raiz->tipo == ARTISTA && strcmp(raiz->dado.ARTISTA.estiloMusical, estilo) == 0) {
-            resultado = &raiz->dado.ARTISTA;
+            printf("🎵 Artista encontrado: %s (%s)\n", 
+                raiz->dado.ARTISTA.nome, 
+                raiz->dado.ARTISTA.estiloMusical);
         }
-
-        Artista *esqResultado = buscarArtistasPorEstilo(raiz->esq, estilo);
-        Artista *dirResultado = buscarArtistasPorEstilo(raiz->dir, estilo);
-
-        inserirArvRubroNegra(&resultado, esqResultado);
-        inserirArvRubroNegra(&resultado, dirResultado);
-        
-        return resultado;
+        buscarArtistasPorEstilo(raiz->dir, estilo);
+    } else {
+        printf("Não existem artistas com esse estilo musical cadastrados.\n");
+        exit(1);
     }
+    return;
 }
 
 // Remoção int removerArvRubroNegra(Arvore **raiz, char *nome); // aqui vem a remover da rubro negra
@@ -339,7 +339,7 @@ void imprimirArvRubroNegra(Arvore *no){
             printf("Nome: %s\n", no->dado.ARTISTA.nome);
             printf("Estilo musical: %s\n", no->dado.ARTISTA.estiloMusical);
             printf("Tipo: ");
-            switch(no->dado.ARTISTA.tipo) {
+            switch(no->dado.ARTISTA.TipArt) {
                 case CANTOR: printf("Cantor\n"); break;
                 case DUPLA: printf("Dupla\n"); break;
                 case BANDA: printf("Banda\n"); break;
