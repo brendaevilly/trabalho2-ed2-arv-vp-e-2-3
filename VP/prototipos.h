@@ -13,7 +13,7 @@ struct musica;
 struct arvore;
 
 typedef enum {ARTISTA, ALBUM} TipoDado;
-typedef enum {CANTOR, DUPLA, BANDA, GRUPO} TipoArtista;
+typedef enum {CANTOR = 1, DUPLA, BANDA, GRUPO} TipoArtista;
 typedef enum {VERMELHO, PRETO} Cor;
 
 typedef struct artista {

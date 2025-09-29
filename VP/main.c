@@ -9,15 +9,28 @@ void menu(){
     printf("1  - Cadastrar artista\n");
     printf("2  - Cadastrar álbum\n");
     printf("3  - Cadastrar música\n");
+
+    printf("---------------------------------------\n");
+
     printf("4  - Listar todos os artistas\n");
     printf("5  - Mostrar álbuns de um artista\n");
     printf("6  - Mostrar músicas de um álbum\n");
     printf("7  - Mostrar músicas de um artista\n");
+
+    printf("---------------------------------------\n");
+
     printf("8  - Buscar artista (mostrar caminho)\n");
     printf("9  - Buscar música de artista\n");
     printf("10 - Buscar música em um álbum\n");
+
+    printf("---------------------------------------\n");
+
     printf("11 - Mostrar artistas por estilo musical\n");
     printf("12 - Remover música de um álbum\n");
+    printf("13 - (Futuro) Remover álbum de um artista\n");
+    printf("14 - (Futuro) Remover artista\n");
+    printf("15 - (Futuro) Remover música de um artista\n");
+    printf("-----------------------------------------\n");
     printf("0  - Sair\n");
     printf("====================================\n");
     printf("Escolha uma opção: ");
