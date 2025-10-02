@@ -172,16 +172,20 @@ void balanceamento(Arvore **raiz) {
 }
 
 int inserirArvRubroNegra(Arvore **raiz, Arvore *novoNo){
-    int inseriu = inserirNo(raiz, novoNo);
-    raiz = inserirNo(raiz, novoNo);
-    if (inseriu){
-        atualizaCorRaiz(raiz);
+    int inseriu = 0;
+    if (raiz && novoNo){
+        *raiz = inserirNo(raiz, novoNo);
+        (*raiz)->cor = PRETO; // raiz sempre preta
+        inseriu = 1;
+        return (inseriu);
+    } else {
+        printf("Erro!\n");
+        exit(1);
     }
-    return inseriu;
 }
 
 
-int inserirNo(Arvore **raiz, Arvore *novoNo){
+Arvore *inserirNo(Arvore **raiz, Arvore *novoNo){
     int inseriu = 0;
     if(raiz){
         if (*raiz == NULL){
@@ -190,13 +194,13 @@ int inserirNo(Arvore **raiz, Arvore *novoNo){
         }
         else {
             if(strcmp(novoNo->dado.ARTISTA.nome, (*raiz)->dado.ARTISTA.nome) < 0) {
-                inseriu = inserirArvRubroNegra(&(*raiz)->esq, novoNo);
+                (*raiz)->esq = inserirNo(&(*raiz)->esq, novoNo);
             } else {
-                inseriu = inserirArvRubroNegra(&(*raiz)->dir, novoNo);
+                (*raiz)->dir = inserirNo(&(*raiz)->dir, novoNo);
             }
         } 
     balanceamento(raiz);
-    return (inseriu);
+    return (*raiz);
     }else{
         printf("Erro!\n");
         exit(1);
