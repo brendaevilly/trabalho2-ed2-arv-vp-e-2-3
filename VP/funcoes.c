@@ -172,10 +172,9 @@ void balanceamento(Arvore **raiz) {
 }
 
 int inserirArvRubroNegra(Arvore **raiz, Arvore *novoNo){
-    int inseriu = 0;
+    int inseriu = inserirNo(raiz, novoNo);
     raiz = inserirNo(raiz, novoNo);
-    if (raiz){
-        inseriu = 1;
+    if (inseriu){
         atualizaCorRaiz(raiz);
     }
     return inseriu;
