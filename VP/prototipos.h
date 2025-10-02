@@ -18,7 +18,7 @@ typedef enum {VERMELHO, PRETO} Cor;
 
 typedef struct artista {
     TipoArtista TipArt;
-    char nome[50], estiloMusical[50];
+    char nome[100], estiloMusical[50];
     int numeroAlbuns;
     struct arvore *albuns;
 } Artista;
@@ -64,9 +64,11 @@ void rotacionarEsquerda(Arvore **raiz);
 void rotacionarDireita(Arvore **raiz);
 void trocaCor(Arvore **raiz);
 void balanceamento(Arvore **raiz);
+void atualizaCorRaiz(Arvore **raiz);
 
 /* --- Inserção --- */
 int inserirArvRubroNegra(Arvore **raiz, Arvore *novoNo);
+int inserirNo(Arvore **raiz, Arvore *novoNo);
 int inserirMusica(Musica **lista, Musica novaMusica);
 
 /* --- Busca --- */

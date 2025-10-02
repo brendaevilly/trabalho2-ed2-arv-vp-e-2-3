@@ -34,6 +34,7 @@ Arvore *alocarTree(TipoDado tipo){
     return (novo);
 }
 
+
 void preencherNo(Arvore *no){
     if(no != NULL){
         if(no->tipo == ARTISTA) {
@@ -121,13 +122,17 @@ void rotacionarEsquerda(Arvore **raiz){
     Arvore *aux = (*raiz)->dir;
     (*raiz)->dir = aux->esq;
     aux->esq = *raiz;
-    *raiz = aux;
+    aux->cor = (*raiz)->cor;
+    (*raiz)->cor = VERMELHO;
+    *raiz = aux;  
 }
 
 void rotacionarDireita(Arvore **raiz){
     Arvore *aux = (*raiz)->esq;
     (*raiz)->esq = aux->dir;
     aux->dir = *raiz;
+    aux->cor = (*raiz)->cor;
+    (*raiz)->cor = VERMELHO;
     *raiz = aux;
 }
 
@@ -166,8 +171,18 @@ void balanceamento(Arvore **raiz) {
     }
 }
 
-
 int inserirArvRubroNegra(Arvore **raiz, Arvore *novoNo){
+    int inseriu = 0;
+    raiz = inserirNo(raiz, novoNo);
+    if (raiz){
+        inseriu = 1;
+        atualizaCorRaiz(raiz);
+    }
+    return inseriu;
+}
+
+
+int inserirNo(Arvore **raiz, Arvore *novoNo){
     int inseriu = 0;
     if(raiz){
         if (*raiz == NULL){
@@ -187,6 +202,11 @@ int inserirArvRubroNegra(Arvore **raiz, Arvore *novoNo){
         printf("Erro!\n");
         exit(1);
     }
+}
+
+void atualizaCorRaiz(Arvore **raiz){
+    if(raiz != NULL && *raiz != NULL)
+        (*raiz)->cor = PRETO;
 }
 
 int inserirMusica(Musica **lista, Musica novaMusica){

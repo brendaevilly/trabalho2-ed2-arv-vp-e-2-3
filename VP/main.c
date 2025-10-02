@@ -27,9 +27,9 @@ void menu(){
 
     printf("11 - Mostrar artistas por estilo musical\n");
     printf("12 - Remover música de um álbum\n");
-    printf("13 - (Futuro) Remover álbum de um artista\n");
-    printf("14 - (Futuro) Remover artista\n");
-    printf("15 - (Futuro) Remover música de um artista\n");
+    printf("13 - Remover álbum de um artista\n");
+    printf("14 - Remover artista\n");
+    printf("15 - Remover música de um artista\n");
     printf("-----------------------------------------\n");
     printf("0  - Sair\n");
     printf("====================================\n");
@@ -64,6 +64,7 @@ int main(){
                 char nomeArtista[100];
                 printf("Digite o nome do artista: ");
                 scanf(" %[^\n]", nomeArtista);
+                getchar();
                 deixarMaiusculo(nomeArtista);
 
                 Arvore *artista = buscarArvRubroNegra(biblioteca, nomeArtista);
@@ -88,12 +89,14 @@ int main(){
                 char nomeArtista[100], tituloAlbum[100];
                 printf("Digite o nome do artista: ");
                 scanf(" %[^\n]", nomeArtista);
+                getchar();
                 deixarMaiusculo(nomeArtista);
 
                 Arvore *artista = buscarArvRubroNegra(biblioteca, nomeArtista);
                 if (artista && artista->tipo == ARTISTA) {
                     printf("Digite o título do álbum: ");
                     scanf(" %[^\n]", tituloAlbum);
+                    getchar();
                     deixarMaiusculo(tituloAlbum);
 
                     Arvore *album = buscarAlbumDeArtista(artista, tituloAlbum);
@@ -127,6 +130,7 @@ int main(){
                 char nome[100];
                 printf("Digite o nome do artista: ");
                 scanf(" %[^\n]", nome);
+                getchar();
                 deixarMaiusculo(nome);
                 mostrarAlbunsDeArtista(biblioteca, nome);
                 break;
@@ -136,12 +140,14 @@ int main(){
                 char nome[100], nalbum[100];
                 printf("Digite o nome do artista: ");
                 scanf(" %[^\n]", nome);
+                getchar();
                 deixarMaiusculo(nome);
                 Arvore *artista = buscarArvRubroNegra(biblioteca, nome);
                 if (artista){
                     if (artista && artista->tipo == ARTISTA){
                         printf("Digite o título do álbum: ");
                         scanf(" %[^\n]", nalbum);
+                        getchar();
                         deixarMaiusculo(nalbum);
                         Arvore *album = buscarAlbumDeArtista(artista, nalbum);
                         mostrarMusicasDeAlbum(album);
@@ -154,6 +160,7 @@ int main(){
                 char nome[100];
                 printf("Digite o nome do artista: ");
                 scanf(" %[^\n]", nome);
+                getchar();
                 deixarMaiusculo(nome);
                 mostrarMusicasDeArtista(biblioteca, nome);
                 break;
@@ -163,6 +170,7 @@ int main(){
                 char nome[100];
                 printf("Digite o nome do artista: ");
                 scanf(" %[^\n]", nome);
+                getchar();
                 deixarMaiusculo(nome);
                 int comparacoes = 0;
                 printf("\n Caminho da busca:\n");
@@ -175,6 +183,7 @@ int main(){
                 char nomeArtista[100], tituloMusica[100];
                 printf("Digite o nome do artista: ");
                 scanf(" %[^\n]", nomeArtista);
+                getchar();
                 deixarMaiusculo(nomeArtista);
                 printf("Digite o título da música: ");
                 scanf(" %[^\n]", tituloMusica); 
@@ -194,6 +203,7 @@ int main(){
                 char nomeArtista[100], tituloAlbum[100], tituloMusica[100];
                 printf("Digite o nome do artista: ");
                 scanf(" %[^\n]", nomeArtista);
+                getchar();
                 deixarMaiusculo(nomeArtista);
                 printf("Digite o título do álbum: ");
                 scanf(" %[^\n]", tituloAlbum);
@@ -216,6 +226,7 @@ int main(){
                 char estilo[50];
                 printf("Digite o estilo musical: ");
                 scanf(" %[^\n]", estilo);
+                getchar();
                 deixarMaiusculo(estilo);
                 mostrarArtistasPorEstilo(biblioteca, estilo);
                 break;
@@ -225,12 +236,15 @@ int main(){
                 char nomeArtista[100], tituloAlbum[100], tituloMusica[100];
                 printf("Digite o nome do artista: ");
                 scanf(" %[^\n]", nomeArtista);
+                getchar();
                 deixarMaiusculo(nomeArtista);
                 printf("Digite o título do álbum: ");
                 scanf(" %[^\n]", tituloAlbum);
+                getchar();
                 deixarMaiusculo(tituloAlbum);
                 printf("Digite o título da música a remover: ");
                 scanf(" %[^\n]", tituloMusica);
+                getchar();
                 deixarMaiusculo(tituloMusica);
 
                 Arvore *album = buscarAlbumDeArtista(biblioteca, tituloAlbum);
@@ -245,6 +259,14 @@ int main(){
                     printf("\n Álbum ou artista não encontrado.\n");
                 }
                 break;
+            }
+
+            case 13: {
+                char nomeAlbum[100];
+                printf("Digite o nome do album a ser removido: ");
+                scanf(" %[^\n]", nomeAlbum);
+                getchar();
+                deixarMaiusculo(nomeAlbum);
             }
 
             case 0:
