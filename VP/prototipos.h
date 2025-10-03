@@ -68,7 +68,7 @@ void atualizaCorRaiz(Arvore **raiz);
 
 /* --- Inserção --- */
 int inserirArvRubroNegra(Arvore **raiz, Arvore *novoNo);
-Arvore *inserirNo(Arvore **raiz, Arvore *novoNo);
+int inserirNo(Arvore **raiz, Arvore *novoNo);
 int inserirMusica(Musica **lista, Musica novaMusica);
 
 /* --- Busca --- */
