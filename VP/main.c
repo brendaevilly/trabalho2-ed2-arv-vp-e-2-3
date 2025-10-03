@@ -261,19 +261,20 @@ int main(){
                 break;
             }
 
-            case 13: {
+            case 13: { //remover album
                 char nomeAlbum[100];
                 printf("Digite o nome do album a ser removido: ");
                 scanf(" %[^\n]", nomeAlbum);
                 getchar();
                 deixarMaiusculo(nomeAlbum);
-                Arvore *Aremover = buscarAlbumDeArtista(biblioteca, nomeAlbum);
+                Arvore *Aremover = buscarArvRubroNegra(biblioteca, nomeAlbum);
                 if(Aremover != NULL){
                     removerArvRubroNegra(&biblioteca, nomeAlbum);
                     printf("Álbum %s removido com sucesso!\n", nomeAlbum);
                 } else {
                     printf("Álbum não encontrado.\n");
                 }
+                break;
             }
 
             case 14:{
@@ -289,6 +290,29 @@ int main(){
                 }else{
                     printf("Artista não encontrado.\n");
                 }
+                break;
+            }
+
+            case 15:{
+                char nomeArtista[100], nomeMusica[100];
+                printf("Digite o nome do Artista");
+                scanf(" %[^\n]", nomeArtista);
+                getchar();
+                deixarMaiusculo(nomeArtista);
+                Arvore *artista = buscarArvRubroNegra(biblioteca, nomeArtista);
+                
+                if(artista){
+                printf("Digite o nome da musica que deseja remover: ");
+                scanf(" %[^\n]", nomeMusica);
+                getchar();
+                deixarMaiusculo(nomeMusica);
+                if(removerMusica(&artista->dado.ALBUM.musicas, nomeMusica)){
+                    printf("Musica Removida com sucesso!\n");
+                } else {
+                    printf("Erro ao remover musica!");
+                }
+                }
+                break;
             }
 
             case 0:

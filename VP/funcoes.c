@@ -304,6 +304,7 @@ void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes){
     return (album);
 }*/
 
+
 Arvore *buscarAlbumDeArtista(Arvore *artista, char *tituloAlbum) {
     if (artista == NULL || artista->tipo != ARTISTA) {
         printf("Artista inválido ou não encontrado.\n");
