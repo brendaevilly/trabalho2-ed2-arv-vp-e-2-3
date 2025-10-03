@@ -136,14 +136,13 @@ void rotacionarDireita(Arvore **raiz){
     *raiz = aux;
 }
 
-void trocaCor(Arvore **raiz){
-    if(raiz != NULL && *raiz != NULL){
-        if((*raiz)->esq && (*raiz)->dir &&
-        (*raiz)->esq->cor == VERMELHO && (*raiz)->dir->cor == VERMELHO){
-            (*raiz)->cor = VERMELHO;
-            (*raiz)->esq->cor = PRETO;
-            (*raiz)->dir->cor = PRETO;
-        }
+void trocaCor(Arvore **R){
+    (*R)->cor = !(*R)->cor;
+    if ((*R)->esq){
+        (*R)->esq->cor = !(*R)->esq->cor;
+    }
+    if ((*R)->dir){
+        (*R)->dir->cor = !(*R)->dir->cor;
     }
 }
 
