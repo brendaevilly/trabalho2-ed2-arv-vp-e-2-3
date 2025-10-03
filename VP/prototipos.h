@@ -81,6 +81,11 @@ Musica *buscarMusicaEmAlbuns(Arvore *albuns, char *titulo); /* procura em todos 
 
 /* --- Remoção --- */
 int removerArvRubroNegra(Arvore **raiz, char *nome);
+int removeNoRN(Arvore **raiz, char *nome); 
+void move2EsqRed(Arvore **raiz);
+void move2DirRed(Arvore **raiz);
+void removeMenor(Arvore **raix);
+Arvore *procuraMenor(Arvore *raiz);
 int removerMusica(Musica **lista, char *titulo);
 
 /* --- Impressão e mostrar específicas --- */

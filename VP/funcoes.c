@@ -147,6 +147,17 @@ void trocaCor(Arvore **raiz){
     }
 }
 
+int pegaCor(Arvore *R){
+    int cor;
+
+    if (R == NULL)
+        cor = PRETO;
+    else
+        cor = R->cor;
+
+    return cor;
+}
+
 
 void balanceamento(Arvore **raiz) {
     if (raiz != NULL && *raiz != NULL) {
@@ -364,6 +375,99 @@ void buscarArtistasPorEstilo(Arvore *raiz, char *estilo) {
 }
 
 // Remoção int removerArvRubroNegra(Arvore **raiz, char *nome); // aqui vem a remover da rubro negra
+void move2EsqRed(Arvore **R){
+    trocaCor(R);
+
+    if ((*R)->dir && ((*R)->dir->esq) == VERMELHO){
+        rotacionarDireita(&(*R)->dir);
+        rotacionarEsquerda(R);
+        trocaCor(R);
+    }
+
+}
+
+void move2DirRed(Arvore **R){
+    trocaCor(R);
+    if ((*R)->esq && ((*R)->esq->esq) == VERMELHO){
+        rotacionarDireita(R);
+        trocaCor(R);
+
+    }
+}
+
+void removeMenor(Arvore **R){
+    if (!(*R)->esq){
+        free(*R);
+        *R = NULL;
+    } else {
+        if (pegaCor((*R)->esq) == PRETO && pegaCor((*R)->esq->esq) == PRETO){
+            move2EsqRed(R);
+        }
+        
+        removeMenor(&(*R)->esq);
+        balanceamento(R);
+    }
+}
+
+Arvore *procuraMenor(Arvore *R){
+    Arvore *menor = R;
+
+    if(R){
+        if(R->esq){
+            menor = procuraMenor(R->esq);
+        }
+    }
+
+    return(menor);
+}
+
+int removeNoRN(Arvore **R, char *nome){
+    int existe = 0;
+    if(*R){
+        if (strcmp(nome, (*R)->dado.ARTISTA.nome) < 0){
+            if((*R)->esq && pegaCor((*R)->esq) == PRETO && pegaCor((*R)->esq->esq) == PRETO){
+                move2EsqRed(R);
+            } existe = removeNoRN(&(*R)->esq, nome);
+        } else {
+            
+            if(pegaCor((*R)->esq) == VERMELHO){
+                rotacionarDireita(R);
+            }
+
+            if (strcmp(nome, (*R)->dado.ARTISTA.nome) == 0 && (*R)->dir == NULL)
+            {
+                free(*R);
+                *R = NULL;
+                existe = 1;
+            } else {
+
+            if((*R)->dir && pegaCor((*R)->dir) == PRETO && pegaCor((*R)->dir->esq) == PRETO){
+                    move2DirRed(R);
+            }
+            if(strcmp(nome, (*R)->dado.ARTISTA.nome) == 0){
+                Arvore *aux = procuraMenor((*R)->dir);
+                (*R)->dado = aux->dado;
+                removeMenor(&(*R)->dir);
+                existe = 1;
+            }
+            else {
+                existe = removeNoRN(&(*R)->dir, nome);
+                }
+            }
+        }
+    }
+    balanceamento(R);
+    return(existe);
+}
+
+int removerArvRubroNegra(Arvore **R, char *nome){
+    int removeu = removeNoRN(R, nome);
+    if(removeu){
+        (*R)->cor = PRETO;
+    }
+    return(removeu);
+}
+
 int removerMusica(Musica **lista, char titulo[]){
     int removeu = 0;
     if(*lista != NULL){

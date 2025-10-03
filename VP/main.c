@@ -267,6 +267,28 @@ int main(){
                 scanf(" %[^\n]", nomeAlbum);
                 getchar();
                 deixarMaiusculo(nomeAlbum);
+                Arvore *Aremover = buscarAlbumDeArtista(biblioteca, nomeAlbum);
+                if(Aremover != NULL){
+                    removerArvRubroNegra(&biblioteca, nomeAlbum);
+                    printf("Álbum %s removido com sucesso!\n", nomeAlbum);
+                } else {
+                    printf("Álbum não encontrado.\n");
+                }
+            }
+
+            case 14:{
+                char nomeArtista[100];
+                printf("Digite o nome do Artista que deseja apagar: ");
+                scanf(" %[^\n]", nomeArtista);
+                getchar();
+                deixarMaiusculo(nomeArtista);
+                Arvore *Aremover = buscarArvRubroNegra(biblioteca, nomeArtista);
+                if(Aremover != NULL){
+                    removerArvRubroNegra(&biblioteca, nomeArtista);
+                    printf("Artista %s removido com sucesso!\n", nomeArtista);
+                }else{
+                    printf("Artista não encontrado.\n");
+                }
             }
 
             case 0:
