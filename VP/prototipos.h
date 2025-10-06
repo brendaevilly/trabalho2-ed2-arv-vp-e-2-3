@@ -18,7 +18,7 @@ typedef enum {VERMELHO, PRETO} Cor;
 
 typedef struct artista {
     TipoArtista TipArt;
-    char nome[100], estiloMusical[50];
+    char nome[50], estiloMusical[70];
     int numeroAlbuns;
     struct arvore *albuns;
 } Artista;
@@ -74,7 +74,7 @@ int inserirMusica(Musica **lista, Musica *novaMusica);
 Arvore *buscarArvRubroNegra(Arvore *raiz, char *nome);
 Musica *buscarMusica(Musica *lista, char *titulo);
 Arvore *buscarAlbumDeArtista(Arvore *raiz, char *tituloAlbum);
-Musica *buscarMusicaDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum, char *tituloMusica);
+Musica *buscarMusicaDeAlbum(Arvore *album, char *tituloAlbum, char *tituloMusica){
 Musica *buscarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusica);
 Musica *buscarMusicaEmAlbuns(Arvore *albuns, char *titulo); /* procura em todos os álbuns de uma árvore de ALBUMs */
 
