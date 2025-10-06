@@ -55,8 +55,7 @@ int main(){
                     if(inserirArvore(&biblioteca, novoArtista))
                         atualizaCorRaiz(&biblioteca);
                         printf("\n Artista cadastrado com sucesso!\n");
-                    else
-                        printf("\n Erro ao cadastrar artista.\n");
+                    else printf("\n Erro ao cadastrar artista.\n");
                 }
                 break;
             }
