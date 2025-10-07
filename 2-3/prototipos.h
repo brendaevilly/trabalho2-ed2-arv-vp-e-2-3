@@ -76,4 +76,7 @@ void mostrarMusicasDeAlbum(DadoUnion *album);
 void imprimirAlbunsRec(Arvore *n);
 void mostrarMusicasDeArtista(Arvore *artistas, char *nomeArtista);
 
+void liberarMusicas(Musica *lista);
+void liberarArvore(Arvore *raiz);
+
 #endif
