@@ -467,3 +467,69 @@ void liberarArvore(Arvore *raiz){
         free(raiz);
     }
 }
+
+// ================= REMOVER ======================
+
+int descobrirFilho(Arvore *filho, Arvore *pai){
+    //1 - esq | 2 - cen | 3 - dir
+    int resposta = 0;
+    if(strcmp(filho->info1.ALBUM.nome, pai->info2.ALBUM.nome) > 0) resposta = 3;
+    else if (strcmp(filho->info1.ALBUM.nome, pai->info1.ALBUM.nome) resposta = 2;
+    else resposta = 1;
+
+    return (resposta);
+}
+
+int removerFolha(Arvore *folha, Arvore *pai){
+    int posicao = descobrirFilho(folha, pai);
+}
+
+int removerArvore23(Arvore **R, DadoUnion *info, Arvore *pai){
+    int removeu = 0, compInfo1 = 2, compInfo2 = 2;
+    if(*R){
+        if(strcmp(info->ALBUM.nome, (*R)->info1.ALBUM.nome) == 0){
+            //casos folha
+            if(ehFolha(*R)){
+                if((*R)->infos == 2){
+                    (*R)->info1 = (*R)->info2;
+                    (*R)->nInfos = 1;
+                    removeu = 1;
+                }else{
+
+                }
+            //casos não-folha
+            }else{
+                //filho centro
+                //filho direita se existir
+                //filho esquerda
+                //pai, não recebe 1
+            }
+        }else if(strcmp(info->ALBUM.nome, (*R)->info2.ALBUM.nome) == 0){
+            if(ehFolha(*R)){
+
+            }else{
+                //sempre resolve com os filhos
+                //filho dir
+                //filho cen
+                //juntar
+            }
+        }else{
+            //recursão
+            compInfo1 = strcmp(nome, (*R)->info1.ARTISTA.nome);
+            if((*R)->nInfos == 2)
+                compInfo2 = strcmp(nome, (*R)->info2.ARTISTA.nome);
+
+            if(compInfo1 < 0)
+                nInfoBusca = buscarNaArvore23((*R)->esq, nome, busca, R);
+            else if(compInfo2 != 2){
+                if(compInfo2 < 0)
+                    nInfoBusca = buscarNaArvore23((*R)->cen, nome, busca, R);
+                else nInfoBusca = buscarNaArvore23((*R)->dir, nome, busca, R);
+            }
+            //código de resolver pai/avô
+            if(!removeu){}
+        }
+    }
+
+    return (removeu);
+}
