@@ -105,7 +105,5 @@ void liberarMusicas(Musica *lista);
 void liberarAlbuns(Arvore *albuns);
 void liberarArtistas(Arvore *raiz);
 void liberarArvore(Arvore *raiz);
-void liberarTempo(struct tm *tempo);
-void liberarString(char *str);
 
 #endif

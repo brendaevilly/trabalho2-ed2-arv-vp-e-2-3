@@ -263,3 +263,126 @@ void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes){
         }
     }
 }
+
+Arvore *buscarAlbumDeArtista(DadoUnion *artista, char *tituloAlbum, int *nInfoBuscada) {
+    Arvore *raizAlbuns = artista->ARTISTA.albuns;
+    if(raizAlbuns) {
+        Arvore *busca = inicializar();
+        *nInfoBuscada = buscarNaArvore23(raizAlbuns, tituloAlbum, busca);
+    } 
+    return busca;
+}
+
+Musica *buscarMusicaDeAlbum(DadoUnion *album, char *tituloAlbum, char *tituloMusica){
+    Musica *musica = NULL;
+    if(album) 
+        musica = buscarMusica(album->ALBUM.musicas, tituloMusica);
+    return musica;
+}
+
+void buscarMusicaEmAlbuns(Arvore *albuns, Musica *busca, char *tituloMusica) {
+    if(albuns && !busca){
+        busca = buscarMusicaDeAlbum(albuns, albuns->info1.ALBUM.nome, tituloMusica);
+        if(albuns->nInfos == 2 && !busca)
+            busca = buscarMusicaDeAlbum(albuns, albuns->info2.ALBUM.nome, tituloMusica);
+        buscarMusicaEmAlbuns(albuns->esq, busca, tituloMusica);
+        buscarMusicaEmAlbuns(albuns->cen, busca, tituloMusica);
+        if(albuns->nInfos == 2)
+            buscarMusicaEmAlbuns(albuns->dir, busca, tituloMusica);
+    }
+}
+
+Musica *buscarMusicaDeArtista(Arvore *artistas, char *nomeArtista, char *tituloMusica) {
+    Musica *musica = inicializarM();
+    Arvore *artista = inicializar();
+    int nInfoBuscada = buscarNaArvore23(artistas, nomeArtista, artista);
+    if (artista){
+        if(nInfoBuscada == 1)
+            musica = buscarMusicaEmAlbuns(artista->info1.ARTISTA.albuns, tituloMusica);
+        else musica = buscarMusicaEmAlbuns(artista->info2.ARTISTA.albuns, tituloMusica);
+    }
+        
+    return (musica);
+}
+
+void mostrarArtistasPorEstilo(Arvore *artistas, char *estilo) {
+    if (artistas){
+        int compInfo1 = 2, compInfo2 = 2;
+
+        compInfo1 = strcmp(estilo, artistas->info1.ARTISTA.estiloMusical);
+        if(raiz->nInfos == 2)
+            compInfo2 = strcmp(estilo, artistas->info2.ARTISTA.estiloMusical);
+
+        if(compInfo1 == 0){
+            printf("%s (%s)\n", artistas->info1.ARTISTA.nome, artistas->info1.ARTISTA.estiloMusical);
+        }else if(compInfo2 != 2 && compInfo2 == 0){
+            printf("%s (%s)\n", artistas->info2.ARTISTA.nome, artistas->info2.ARTISTA.estiloMusical);
+        }else{
+            if(compInfo1 < 0)
+                buscarNaArvore23(artistas->esq, estilo);
+            else if(compInfo2 != 2){
+                if(compInfo2 < 0)
+                    buscarNaArvore23(artistas->cen, estilo);
+                else buscarNaArvore23(artistas->dir, estilo);
+            }
+        }
+    }
+}
+
+void mostraArtista(Arvore *raiz){
+    printf("\n=== Artista ===\n");
+    printf("Nome: %s\n", raiz->info1.ARTISTA.nome);
+    printf("Estilo musical: %s\n", raiz->info1.ARTISTA.estiloMusical);
+    printf("Tipo: ");
+    switch(raiz->info1.ARTISTA.tipo) {
+        case CANTOR: printf("Cantor\n"); break;
+        case DUPLA: printf("Dupla\n"); break;
+        case BANDA: printf("Banda\n"); break;
+        case GRUPO: printf("Grupo\n"); break;
+        default: printf("Desconhecido\n"); break;
+    }
+    printf("Número de álbuns: %d\n", raiz->info1.ARTISTA.numeroAlbuns);
+
+    if(raiz->nInfos == 2){
+        printf("\n=== Artista ===\n");
+        printf("Nome: %s\n", raiz->info1.ARTISTA.nome);
+        printf("Estilo musical: %s\n", raiz->info1.ARTISTA.estiloMusical);
+        printf("Tipo: ");
+        switch(raiz->info1.ARTISTA.tipo) {
+            case CANTOR: printf("Cantor\n"); break;
+            case DUPLA: printf("Dupla\n"); break;
+            case BANDA: printf("Banda\n"); break;
+            case GRUPO: printf("Grupo\n"); break;
+            default: printf("Desconhecido\n"); break;
+        }
+        printf("Número de álbuns: %d\n", raiz->info1.ARTISTA.numeroAlbuns);
+    }
+}
+
+void mostraAlbum(Arvore *raiz){
+    printf("\n=== Álbum ===\n");
+    printf("Título: %s\n", raiz->info1.ALBUM.nome);
+    printf("Ano de lançamento: %d\n", raiz->info1.ALBUM.anoLancamento);
+    printf("Número de músicas: %d\n", raiz->info1.ALBUM.numeroMusicas);
+    if(raiz->nInfos == 2){
+        printf("\n=== Álbum ===\n");
+        printf("Título: %s\n", raiz->info2.ALBUM.nome);
+        printf("Ano de lançamento: %d\n", raiz->info2.ALBUM.anoLancamento);
+        printf("Número de músicas: %d\n", raiz->info2.ALBUM.numeroMusicas);
+    }
+}
+
+void imprimirArvore23(Arvore *raiz){
+    if(raiz){
+        imprimirArvore23(raiz->esq);
+        imprimirArvore23(raiz->cen);
+
+        if(raiz->tipo == ARTISTA)
+            mostraArtista(raiz);
+        else if(raiz->tipo == ALBUM)
+            mostraAlbum(raiz);
+
+        if(raiz->nInfos == 2)
+            imprimirArvore23(raiz->dir);
+    }
+}

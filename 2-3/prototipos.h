@@ -60,9 +60,15 @@ int inserirMusica(Musica **lista, Musica *novaMusica);
 
 int buscarNaArvore23(Arvore *raiz, char *nome, Arvore *busca);
 Musica *buscarMusica(Musica *lista, char *titulo);
+void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes);
+Arvore *buscarAlbumDeArtista(DadoUnion *artista, char *tituloAlbum, int *nInfoBuscada);
+Musica *buscarMusicaDeAlbum(DadoUnion *album, char *tituloAlbum, char *tituloMusica);
+void buscarMusicaEmAlbuns(Arvore *albuns, Musica *busca, char *tituloMusica);
+Musica *buscarMusicaDeArtista(Arvore *artistas, char *nomeArtista, char *tituloMusica);
 
-
-
-
+void mostrarArtistasPorEstilo(Arvore *artistas, char *estilo);
+void mostraArtista(Arvore *raiz);
+void mostraAlbum(Arvore *raiz);
+void imprimirArvore23(Arvore *raiz);
 
 #endif

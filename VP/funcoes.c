@@ -233,19 +233,19 @@ Arvore *buscarAlbumDeArtista(Arvore *artista, char *tituloAlbum) {
     return busca;
 }
 
+Musica *buscarMusicaDeAlbum(Arvore *album, char *tituloAlbum, char *tituloMusica){
+    Musica *musica = NULL;
+    if(album) 
+        musica = buscarMusica(album->dado.ALBUM.musicas, tituloMusica);
+    return musica;
+}
+
 void buscarMusicaEmAlbuns(Arvore *albuns, Musica *busca, char *tituloMusica) {
     if(albuns && !busca){
         busca = buscarMusicaDeAlbum(albuns, albuns->dado.ALBUM.titulo, tituloMusica);
         buscarMusicaEmAlbuns(albuns->esq, busca, tituloMusica);
         buscarMusicaEmAlbuns(albuns->dir, busca, tituloMusica);
     }
-}
-
-Musica *buscarMusicaDeAlbum(Arvore *album, char *tituloAlbum, char *tituloMusica){
-    Musica *musica = NULL;
-    if(album) 
-        musica = buscarMusica(album->dado.ALBUM.musicas, tituloMusica);
-    return musica;
 }
 
 Musica *buscarMusicaDeArtista(Arvore *artistas, char *nomeArtista, char *tituloMusica) {
@@ -255,18 +255,6 @@ Musica *buscarMusicaDeArtista(Arvore *artistas, char *nomeArtista, char *tituloM
         musica = buscarMusicaEmAlbuns(artista->dado.ARTISTA.albuns, tituloMusica);
     return musica;
 }
-
-void buscarArtistasPorEstilo(Arvore *artistas, char *estilo) {
-    if (artistas){
-        if (strcmp(raiz->dado.ARTISTA.estiloMusical, estilo) == 0){
-            printf("%s (%s)\n", raiz->dado.ARTISTA.nome, raiz->dado.ARTISTA.estiloMusical);
-        }
-        buscarArtistasPorEstilo(raiz->esq, estilo);
-        buscarArtistasPorEstilo(raiz->dir, estilo);
-    }
-    return;
-}
-
 
 void move2EsqRed(Arvore **R){
     trocaCor(R);
