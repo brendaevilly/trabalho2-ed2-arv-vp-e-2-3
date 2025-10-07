@@ -44,6 +44,7 @@ typedef struct arvore{
 
 Arvore *inicializar();
 Musica *inicializarM();
+void deixarMaiusculo(char *str);
 
 Arvore *alocar(TipoDado tipo);
 Musica *alocarM();
@@ -54,6 +55,9 @@ Arvore *criaNo(DadoUnion info, Arvore *Fesq, Arvore *Fcen);
 void adicionaInfo(Arvore **no, DadoUnion info, Arvore *filho);
 Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe);
 Arvore *quebrarNo(Arvore **no, DadoUnion info, Arvore *filho, DadoUnion *sobe);
+
+void preencherMusica(Musica *musica);
+int inserirMusica(Musica **lista, Musica *novaMusica);
 
 
 #endif

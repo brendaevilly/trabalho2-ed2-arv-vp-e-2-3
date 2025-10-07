@@ -66,8 +66,11 @@ void preencherNo(Arvore *no){
             scanf(" %[^\n]", no->dado.ALBUM.titulo);
             deixarMaiusculo(no->dado.ALBUM.titulo);
 
-            printf("Ano de lançamento: ");
-            scanf("%d", &no->dado.ALBUM.anoLancamento);
+            while(info->ALBUM.anoLancamento > 2025){
+                printf("[ERRO] Insira um ano válido.\n");
+                printf("Ano de lançamento: ");
+                scanf("%d", &info->ALBUM.anoLancamento);
+            }
 
             no->dado.ALBUM.numeroMusicas = 0;
             no->dado.ALBUM.musicas = inicializarM();  
@@ -96,19 +99,6 @@ Musica *alocarMusica(){
     if(no) no->prox = NULL;
 
     return (no);
-}
-
-struct tm *tempoAtual(){
-    time_t agora;
-    time(&agora);
-
-    struct tm *infoTempoLocal = malloc(sizeof(struct tm));  // aloca memória própria
-    if(infoTempoLocal){
-        struct tm *tmp = localtime(&agora);
-        if(tmp) *infoTempoLocal = *tmp;
-    }
-
-    return infoTempoLocal;
 }
 
 // Balanceamento
@@ -203,7 +193,7 @@ int inserirMusica(Musica **lista, Musica *novaMusica){
 // Busca
 
 Arvore *buscarArvRubroNegra(Arvore *raiz, char *nome){
-    Arvore *busca = NULL;
+    Arvore *busca = inicializar();
     if(raiz){
         if(strcmp(nome, raiz->dado.ARTISTA.nome) == 0) busca = raiz;
         else if(strcmp(nome, raiz->dado.ARTISTA.nome) < 0) busca = buscarArvRubroNegra(raiz->esq, nome);
@@ -493,12 +483,4 @@ void liberarArvore(Arvore *raiz){
         liberarArvore(raiz->dir);
         free(raiz);
     }
-}
-
-void liberarTempo(struct tm *tempo){
-    if(tempo) free(tempo);
-}
-
-void liberarString(char *str){
-    if(str) free(str);
 }

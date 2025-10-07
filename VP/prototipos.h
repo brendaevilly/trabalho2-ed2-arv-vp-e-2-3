@@ -51,7 +51,6 @@ typedef struct arvore {
 Arvore *inicializar();
 Musica *inicializarM();
 void deixarMaiusculo(char *str);
-struct tm *tempoAtual();
 
 /* --- Alocação e preenchimento --- */
 Arvore *alocarTree(TipoDado tipo);

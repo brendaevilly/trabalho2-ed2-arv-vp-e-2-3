@@ -11,6 +11,10 @@ Musica *inicializarM(){
     return NULL;
 }
 
+void deixarMaiusculo(char *str){
+    for(int i=0; str[i]!='\0'; i++) str[i] = toupper((unsigned char) str[i]);
+}
+
 Arvore *alocar(TipoDado tipo){
     Arvore *no = (Arvore *)malloc(sizeof(Arvore));
     if(no){
@@ -38,8 +42,15 @@ void preencheInfo(TipoDado tipo, DadoUnion *info){
         scanf(" %[^\n]", info->ARTISTA.nome);
         printf("Estilo musical: ");
         scanf(" %[^\n]", &info->ARTISTA.estiloMusical);
-        printf("Quantidade de álbuns: ");
-        scanf("%d", info->ARTISTA.numeroAlbuns);
+        int op = 0;
+        while (op < 1 || op > 4) {
+            printf("Tipo (1-Cantor, 2-Dupla, 3-Banda, 4-Grupo): ");
+            scanf("%d", &op); printf("\n");
+        }
+        no->dado.ARTISTA.TipArt = (TipoArtista) op;
+
+        no->dado.ARTISTA.numeroAlbuns = 0;
+        no->dado.ARTISTA.albuns = inicializar(); 
     }else if(tipo == ALBUM){
         printf("Título: ");
         scanf(" %[^\n]", info->ALBUM.nome);
@@ -50,8 +61,8 @@ void preencheInfo(TipoDado tipo, DadoUnion *info){
             printf("Ano de lançamento: ");
             scanf("%d", &info->ALBUM.anoLancamento);
         }
-        printf("Número de músicas: ");
-        scanf("%d", &info->ALBUM.numeroMusicas);
+        no->dado.ALBUM.numeroMusicas = 0;
+        no->dado.ALBUM.musicas = inicializarM();
     }else printf("[ERRO] Tipo inválido.\n");
 }
 
@@ -142,4 +153,76 @@ Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe){
     }
 
     return (maior);
+}
+
+void preencherMusica(Musica *musica) {
+    if(musica != NULL){
+        printf("\n=== Cadastro de Música ===\n");
+
+        printf("Título da música: ");
+        scanf(" %[^\n]", musica->titulo);
+        deixarMaiusculo(musica->titulo);
+
+        printf("Duração (em minutos): ");
+        scanf("%d", &musica->minutos);
+    }
+}
+
+int inserirMusica(Musica **lista, Musica *novaMusica){
+    int inseriu = 1;
+    if(*lista == NULL){
+        *lista = novaMusica;
+    } else {
+        Musica *atual = *lista;
+        Musica *ant = inicializarM();
+        while(strcmp((novaMusica, atual) >= 0) && atual){ 
+            if(strcmp(atual->titulo, novaMusica->titulo) == 0) inseriu = 0;
+            ant = atual;
+            atual = atual->prox;
+        }
+        if(inseriu){
+            if(strcmp(atual->titulo, (*lista)->titulo) == 0){
+                *novaMusica = *lista;
+                *lista = novaMusica;
+            }else{
+                if(!atual) ant->prox = novaMusica;
+                else{
+                    ant->prox = novaMusica;
+                    novaMusica->prox = atual;
+                }
+            }
+        }
+        
+    }
+    return inseriu;
+}
+
+int buscarNaArvore23(Arvore *raiz, char *nome, Arvore *busca){
+    int nInfoBusca = 0;
+    if(raiz){
+        int compInfo1 = 2, compInfo2 = 2;
+
+        compInfo1 = strcmp(nome, raiz->info1.ARTISTA.nome);
+        if(raiz->nInfos == 2)
+            compInfo2 = strcmp(nome, raiz->info2.ARTISTA.nome);
+
+        if(compInfo1 == 0){
+            busca = raiz;
+            nInfoBusca = 1;
+        }else if(compInfo2 != 2 && compInfo2 == 0){
+                busca = raiz;
+                nInfoBusca = 2;
+        }else{
+            if(compInfo1 < 0)
+                nInfoBusca = buscarNaArvore23(raiz->esq, nome, busca);
+            else if(compInfo2 != 2){
+                if(compInfo2 < 0)
+                    nInfoBusca = buscarNaArvore23(raiz->cen, nome, busca);
+                else
+                    nInfoBusca = buscarNaArvore23(raiz->dir, nome, busca);
+            }
+        }
+    }
+
+    return nInfoBusca;
 }
