@@ -218,11 +218,48 @@ int buscarNaArvore23(Arvore *raiz, char *nome, Arvore *busca){
             else if(compInfo2 != 2){
                 if(compInfo2 < 0)
                     nInfoBusca = buscarNaArvore23(raiz->cen, nome, busca);
-                else
-                    nInfoBusca = buscarNaArvore23(raiz->dir, nome, busca);
+                else nInfoBusca = buscarNaArvore23(raiz->dir, nome, busca);
             }
         }
     }
 
     return nInfoBusca;
+}
+
+Musica *buscarMusica(Musica *lista, char *titulo){
+    Musica *aux = lista, *busca = NULL;
+    while(aux){
+        if(strcmp(titulo, aux->titulo) == 0) busca = aux;
+        aux = aux->prox;
+    }
+    return busca;
+}
+
+void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes){
+    if(raiz){
+        int compInfo1 = 2, compInfo2 = 2;
+
+        compInfo1 = strcmp(nome, raiz->info1.ARTISTA.nome);
+        printf(" -> [%s]", raiz->info1.ALBUM.nome);
+        (*comparacoes)++;
+
+        if(raiz->nInfos == 2)
+            compInfo2 = strcmp(nome, raiz->info2.ARTISTA.nome);
+            printf(" -> [%s]", raiz->info2.ALBUM.nome);
+            (*comparacoes)++;
+
+        if(compInfo1 == 0){
+            printf("  [ENCONTRADO]\n");
+        }else if(compInfo2 != 2 && compInfo2 == 0){
+            printf("  [ENCONTRADO]\n");
+        }else{
+            if(compInfo1 < 0)
+                buscarNaArvore23(raiz->esq, nome, comparacoes);
+            else if(compInfo2 != 2){
+                if(compInfo2 < 0)
+                    buscarNaArvore23(raiz->cen, nome, comparacoes);
+                else buscarNaArvore23(raiz->dir, nome, comparacoes);
+            }
+        }
+    }
 }
