@@ -47,11 +47,13 @@ Musica *inicializarM();
 
 Arvore *alocar(TipoDado tipo);
 Musica *alocarM();
+int ehFolha(Arvore *R);
 void preencheInfo(TipoDado tipo, DadoUnion *info);
 
 Arvore *criaNo(DadoUnion info, Arvore *Fesq, Arvore *Fcen);
 void adicionaInfo(Arvore **no, DadoUnion info, Arvore *filho);
-Arvore *quebrarNo(Arvore **no, DadoUnion info, Arvore *filho, DadoUnion **sobe);
+Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe);
+Arvore *quebrarNo(Arvore **no, DadoUnion info, Arvore *filho, DadoUnion *sobe);
 
 
 #endif

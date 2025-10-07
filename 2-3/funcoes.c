@@ -13,19 +13,23 @@ Musica *inicializarM(){
 
 Arvore *alocar(TipoDado tipo){
     Arvore *no = (Arvore *)malloc(sizeof(Arvore));
-    if(!no) return NULL;
-    no->tipo = tipo;
-    no->esq = no->cen = no->dir = NULL;
-
+    if(no){
+        no->tipo = tipo;
+        no->esq = no->cen = no->dir = NULL; 
+    }
     return (no);
 }
 
 Musica *alocarM(){
     Musica *no = (Musica *)malloc(sizeof(Musica));
-    if(!no) return NULL;
-    no->prox = NULL;
-
+    if(no) no->prox = NULL;
     return (no);
+}
+
+int ehFolha(Arvore *R){
+    int i = 0;
+    if(!R->esq) i = 1;
+    return (i);
 }
 
 void preencheInfo(TipoDado tipo, DadoUnion *info){
@@ -95,6 +99,46 @@ Arvore *quebrarNo(Arvore **no, DadoUnion info, Arvore *filho, DadoUnion *sobe){
         maior = criaNo((*no)->info2, (*no)->cen, (*no)->dir);
         (*no)->cen = filho;
         (*no)->dir = NULL;
+    }
+
+    return (maior);
+}
+
+Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe){
+    Arvore *maior = inicializar();
+
+    if(!(*R)) 
+        *R = criaNo(info, NULL, NULL);
+    else{
+        if(ehFolha(*R)){
+            if((*R)->info == 1) adicionaInfo(R, info, NULL);
+            else{
+                maior = quebrarNo(R, info, NULL, sobe);
+                if(!Pai){
+                    *R = criaNo(sobe, *R, maior);
+                    maior = NULL;
+                }
+            }
+        }else{
+            if(strcmp(info.ALBUM.nome, (*R)->info1.ALBUM.nome) < 0)
+                maior = inserirNo(&((*R)->esq), info, *R, sobe);
+            else if((*R)->nInfos == 1 || strcmp(info.ALBUM.nome, (*R)->info2.ALBUM.nome) < 0)
+                maior = inserirNo(&((*R)->cen), info, *R, sobe);
+            else maior = inserirNo(&((*R)->dir), info, *R, sobe);
+        }
+
+        if(maior){
+            if((*R)->nInfos == 1){
+                adicionaInfo(R, *sobe, maior);
+                maior = NULL;
+            }else{
+                maior = quebrarNo(R, *sobe, maior, sobe);
+                if(!Pai){
+                    *R = criaNo(*sobe, *R, maior);
+                    maior = NULL;
+                }
+            }
+        }
     }
 
     return (maior);
