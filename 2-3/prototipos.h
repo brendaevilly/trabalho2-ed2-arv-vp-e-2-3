@@ -70,5 +70,10 @@ void mostrarArtistasPorEstilo(Arvore *artistas, char *estilo);
 void mostraArtista(Arvore *raiz);
 void mostraAlbum(Arvore *raiz);
 void imprimirArvore23(Arvore *raiz);
+void imprimirMusicas(Musica *lista);
+void mostrarAlbunsDeArtista(Arvore *artistas, char *nomeArtista);
+void mostrarMusicasDeAlbum(DadoUnion *album);
+void imprimirAlbunsRec(Arvore *n);
+void mostrarMusicasDeArtista(Arvore *artistas, char *nomeArtista);
 
 #endif

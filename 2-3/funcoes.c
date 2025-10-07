@@ -386,3 +386,84 @@ void imprimirArvore23(Arvore *raiz){
             imprimirArvore23(raiz->dir);
     }
 }
+
+void imprimirMusicas(Musica *lista){
+    if(lista){
+        Musica *aux = lista;
+        printf("\n=== Músicas ===\n");
+        while(aux){
+            printf("Título: %s, Duração: %d minutos\n", aux->titulo, aux->minutos);
+            aux = aux->prox;
+        }
+    }else printf("Nenhuma música cadastrada.\n");
+}
+
+void mostrarAlbunsDeArtista(Arvore *artistas, char *nomeArtista){
+    Arvore *artista;
+    int nInfoBuscada = buscarNaArvore23(artistas, nome, artista);
+    if(artista){
+        if(nInfoBuscada == 1){
+            printf("\n=== Álbuns de %s ===\n", artista->info1.ARTISTA.nome);
+            imprimirArvore23(artista->info1.ARTISTA.albuns);
+        }else{
+            printf("\n=== Álbuns de %s ===\n", artista->info2.ARTISTA.nome);
+            imprimirArvore23(artista->info2.ARTISTA.albuns);
+        }
+        
+    }else printf("Artista não encontrado.\n");
+}
+
+void mostrarMusicasDeAlbum(DadoUnion *album){
+    if(album){
+        printf("\n=== Músicas do Álbum %s ===\n", album->ALBUM.nome);
+        imprimirMusicas(album->ALBUM.musicas);
+    }
+}
+
+
+void imprimirAlbunsRec(Arvore *n) {
+    if(n){
+        imprimirAlbunsRec(n->esq);
+        imprimirAlbunsRec(n->cen)
+
+        printf("\n--- Álbum: %s ---\n", n->info1.ALBUM.nome);
+        imprimirMusicas(n->info1.ALBUM.musicas);
+
+        if(n->nInfos == 2){
+            imprimirMusicas(n->info2.ALBUM.musicas);
+            imprimirAlbunsRec(n->dir);
+        }
+    }
+}
+
+void mostrarMusicasDeArtista(Arvore *artistas, char *nomeArtista){
+    Arvore *artista;
+    int nInfoBuscada = buscarNaArvore23(artistas, nome, artista);
+    if(artista){
+        Arvore *aux = inicializar();
+        if(nInfoBusca == 1)
+            aux = artista->info1.ARTISTA.albuns;
+        else aux = artista->info2.ARTISTA.albuns;
+
+        if(!aux) printf("Nenhum álbum cadastrado para este artista.\n");
+        else imprimirAlbunsRec(aux);
+    }else printf("Artista não encontrado.\n");
+}
+
+void liberarMusicas(Musica *lista){
+    Musica *aux;
+    while(lista){
+        aux = lista;
+        lista = lista->prox;
+        free(aux);
+    }
+}
+
+void liberarArvore(Arvore *raiz){
+    if(raiz){
+        liberarArvore(raiz->esq);
+        liberarArvore(raiz->dir);
+        liberarArvore(raiz->cen);
+        free(raiz);
+    }
+}

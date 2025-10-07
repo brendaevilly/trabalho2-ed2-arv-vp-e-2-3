@@ -89,7 +89,6 @@ int removerMusica(Musica **lista, char *titulo);
 /* --- Impressão e mostrar específicas --- */
 void imprimirArvRubroNegra(Arvore *raiz);
 void imprimirMusicas(Musica *lista);
-void listarMusicas(Arvore *no);
 void mostrarAlbunsDeArtista(Arvore *raiz, char *nomeArtista);
 void mostrarMusicasDeAlbum(Arvore *raiz);
 void mostrarArtistasPorEstilo(Arvore *raiz, char *estiloMusical);

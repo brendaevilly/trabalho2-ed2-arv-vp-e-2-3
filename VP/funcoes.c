@@ -410,14 +410,6 @@ void mostrarArtistasPorEstilo(Arvore *raiz, char *estiloMusical){
     }
 }
 
-void listarMusicas(Arvore *no) {
-    if(no){
-        listarMusicas(no->esq);
-        imprimirMusicas(no->dado.ALBUM.musicas);
-        listarMusicas(no->dir);
-    }
-}
-
 void mostrarAlbunsDeArtista(Arvore *artistas, char *nomeArtista){
     Arvore *artista = buscarArvRubroNegra(artistas, nomeArtista);
     if(artista){
