@@ -80,6 +80,8 @@ void liberarMusicas(Musica *lista);
 void liberarArvore(Arvore *raiz);
 
 // REMOVER  
+void balanceia(No **R, No **pai);
+void maiorFilhoEsq(Arvore **R, Arvore **maiorFilho, Arvore **paiM, int pos);
 void removerArvore23(Arvore **R, Arvore **pai, DadoUnion *info);
 
 #endif
