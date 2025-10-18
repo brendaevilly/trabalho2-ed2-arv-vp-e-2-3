@@ -464,15 +464,183 @@ void liberarArvore(Arvore *raiz){
 
 // ================= REMOVER ======================
 
+// balanceia a árvore após remoção
+// as rotações ainda iram ser quebradas em funções separadas
 void balanceia(No **R, No **pai){
     // só faz sentido balancear se o nó existir
     if(*R){
         // só precisamos balancear se o nó estiver vazio
-        if((*R)->nInfo == 0){
+        if((*R)->nInfos == 0){
             // se o pai não for nulo, podemos pedir emprestimo aos irmãos
             if(*pai){
                 // caso 1: raíz é filha da direita
-                if(*R == (*pai)->dir){}
+                if(*R == (*pai)->dir){
+                    // filho do meio tem 2 infos, pode emprestar
+                    if((*pai)->cen->nInfos == 2){
+                        // info 2 do pai desce para o nó vazio
+                        (*R)->info1 = (*pai)->info2;
+                        (*R)->nInfos = 1;
+                        // info 2 do meio sobe para a info 2 do pai
+                        (*pai)->info2 = (*pai)->cen->info2;
+                        (*pai)->cen->nInfos = 1;
+                        // ajusta os filhos
+                        (*R)->esq = (*pai)->cen->dir;
+                        (*pai)->cen->dir = NULL;
+                    } // filho do meio tem 1 info, não pode emprestar
+                    else if((*pai)->cen->nInfos == 1){
+                        // info 2 do pai desce para o nó vazio e ajusta os filhos
+                        (*R)->info2 = (*pai)->info2;
+                        (*R)->dir = (*R)->cen;
+
+                        // info 1 do centro do pai vai para a info um do nó vazio e nInfos são atualizados
+                        (*R)->info1 = (*pai)->cen->info1;
+                        (*R)->nInfos = 2;
+                        (*pai)->nInfos = 1;
+
+                        // centro e esquerda do pai vão para meio e esquerda do nó vazio
+                        (*R)->cen = (*pai)->cen->cen;
+                        (*R)->esq = (*pai)->cen->esq;
+
+                        // centro do pai é liberado
+                        free((*pai)->cen);
+
+                        // centro do pai recebe o nó vazio e direita do pai é nula
+                        (*pai)->cen = *R;
+                        (*pai)->dir = NULL;
+
+                    }
+                } // caso 2: raíz é filha do centro
+                else if(*R == (*pai)->cen){
+                    // se o filho da esquerda tem 2 infos, pode emprestar
+                    if((*pai)->esq->nInfos == 2){
+                        // info 1 do pai desce para o nó vazio
+                        (*R)->info1 = (*pai)->info1;
+                        (*R)->nInfos = 1;
+
+                        // info 2 da esquerda sobe para a info 1 do pai
+                        (*pai)->info1 = (*pai)->esq->info2;
+                        (*pai)->esq->nInfos = 1;
+                        
+                        // ajusta os filhos
+                        (*R)->esq = (*pai)->esq->dir;
+                        (*pai)->esq->dir = NULL;
+                    } // filho da esquerda tem 1 info, não pode emprestar 
+                    else if((*pai)->esq->nInfos == 1){
+                        // pai tem 2 infos
+                        if((*pai)->nInfos == 2){
+                            // info1 do pai desce para a raiz
+                            (*R)->info2 = (*pai)->info1;
+                            // info1 da esquerda passou para a raiz
+                            (*R)->info1 = (*pai)->esq->info1;
+                            (*R)->nInfos = 2;
+
+                            // ajusta os filhos do nó "vazio"
+                            (*R)->dir = (*R)->cen;
+                            (*R)->cen = (*pai)->esq->cen;
+                            (*R)->esq = (*pai)->esq->esq;
+
+                            // ajusta o pai  
+                            (*pai)->info1 = (*pai)->info2;
+                            (*pai)->nInfos = 1;
+
+                            // ajusta os filhos do pai
+                            free((*pai)->esq);
+                            (*pai)->esq = *R;
+                            (*pai)->cen = (*pai)->dir;
+                            (*pai)->dir = NULL;
+                        } // pai tem 1 info
+                        else if((*pai)->nInfos == 1){
+                            // info2 do nó vazio recebe info1 do pai
+                            (*R)->info2 = (*pai)->info1;
+                            // info1 do nó vazio recebe info1 da esquerda do pai
+                            (*R)->info1 = (*pai)->esq->info1;
+                            (*R)->nInfos = 2;
+
+                            // deixa o pai vazio (resolvido na próxima chamada)
+                            (*pai)->nInfos = 0;
+
+                            // ajusta os filhos do nó vazio
+                            (*R)->dir = (*R)->cen;
+                            (*R)->cen = (*pai)->esq->cen;
+                            (*R)->esq = (*pai)->esq->esq;
+
+                            // libera a esquerda do pai
+                            free((*pai)->esq);
+                            (*pai)->esq = NULL;
+                            (*pai)->esq = NULL;
+                        }
+                    }
+                } // caso 3: raíz é filha da esquerda
+                else if(*R == (*pai)->esq){
+                    // filho do centro tem 2 infos, pode emprestar
+                    if((*pai)->cen->nInfos == 2){
+                        // info1 do pai desce para o nó vazio
+                        (*R)->info1 = (*pai)->info1;
+                        (*R)->nInfos = 1;
+
+                        // info1 do centro sobe para a info1 do pai
+                        (*pai)->info1 = (*pai)->cen->info1;
+                        (*pai)->cen->info1 = (*pai)->cen->info2;
+                        (*pai)->cen->nInfos = 1;
+
+                        // ajusta os filhos no nó "vazio"
+                        (*R)->esq = (*R)->cen;
+                        (*R)->cen = (*pai)->cen->esq;
+
+                        // ajusta os filhos do pai
+                        (*pai)->cen->esq = (*pai)->cen->cen;
+                        (*pai)->cen->cen = (*pai)->cen->dir;
+                        (*pai)->cen->dir = NULL;
+                    }
+                    // filho do centro tem 1 info, não pode emprestar
+                    else if((*pai)->cen->nInfos == 1){
+                        // pai tem 2 infos
+                        if((*pai)->nInfos == 2){
+                            // info1 do pai desce para o nó vazio
+                            (*R)->info1 = (*pai)->info1;
+                            // info1 do centro do pai vai para o nó vazio
+                            (*R)->info2 = (*pai)->cen->info1;
+                            (*R)->nInfos = 2;
+
+                            // ajusta os filhos do nó "vazio"
+                            (*R)->esq = (*R)->cen;
+                            (*R)->cen = (*pai)->cen->esq;
+                            (*R)->dir = (*pai)->cen->cen;
+
+                            // ajusta o pai
+                            (*pai)->info1 = (*pai)->info2;
+                            (*pai)->nInfos = 1;
+
+                            // ajusta os filhos do pai
+                            free((*pai)->cen);
+                            (*pai)->cen = (*pai)->dir;
+                            (*pai)->dir = NULL;
+                        } // pai tem 1 info
+                        else if((*pai)->nInfos == 1){
+                            // info1 do pai desce para o nó vazio
+                            (*R)->info1 = (*pai)->info1;
+                            // info1 do centro do pai vai para o nó vazio
+                            (*R)->info2 = (*pai)->cen->info1;
+                            (*R)->nInfos = 2;
+
+                            // ajusta os filhos do nó "vazio"
+                            (*R)->esq = (*R)->cen;
+                            (*R)->cen = (*pai)->cen->esq;
+                            (*R)->dir = (*pai)->cen->cen;
+
+                            // deixa o pai vazio (resolvido na próxima chamada)
+                            (*pai)->nInfos = 0;
+
+                            // ajusta os filhos do pai
+                            free((*pai)->cen);
+                            (*pai)->cen = (*R);
+                            (*pai)->esq = NULL;
+                        }
+                    }
+                }
+            } // se o pai for nulo, significa que o nó vazio é a raíz
+            else{
+                *R = (*R)->cen;
             }
         }
     }
