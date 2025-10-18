@@ -464,6 +464,20 @@ void liberarArvore(Arvore *raiz){
 
 // ================= REMOVER ======================
 
+void balanceia(No **R, No **pai){
+    // só faz sentido balancear se o nó existir
+    if(*R){
+        // só precisamos balancear se o nó estiver vazio
+        if((*R)->nInfo == 0){
+            // se o pai não for nulo, podemos pedir emprestimo aos irmãos
+            if(*pai){
+                // caso 1: raíz é filha da direita
+                if(*R == (*pai)->dir){}
+            }
+        }
+    }
+}
+
 // encontra o maior filho da subárvore esquerda (ou meio dependendo da pos)
 void maiorFilhoEsq(Arvore **R, Arvore **maiorFilho, Arvore **paiM, int pos){
     // verifica se a subárvore não é nula
