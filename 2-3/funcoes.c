@@ -464,60 +464,97 @@ void liberarArvore(Arvore *raiz){
 
 // ================= REMOVER ======================
 
+// encontra o maior filho da subárvore esquerda (ou meio dependendo da pos)
 void maiorFilhoEsq(Arvore **R, Arvore **maiorFilho, Arvore **paiM, int pos){
+    // verifica se a subárvore não é nula
     if(*maiorFilho){
-        if((*maiorFilho)->esq == NULL){ // significa que é uma folha
+        // verifica se é folha
+        if((*maiorFilho)->esq == NULL){ 
+            // variavel que vai guardar a info a ser removida
             DadoUnion aux;
-            if(pos == 1){ // a posição da info em relação ao nó, ela é uma info 1
-                aux = (*maiorFilho)->info1;
-                // remover a info do maior filho
+            // caso em que vamos substituir a info1 da raíz
+            if(pos == 1){
+                // aux guarda a info1 original da raiz
+                aux = (*R)->info1;
+                // caso 1: maior filho tem 2 infos 
                 if((*maiorFilho)->nInfos == 2){
+                    // substitui a info1 da raíz pela maior info do maior filho
                     (*R)->info1 = (*maiorFilho)->info2;
+                    // substitui a info2 do maior filho pela info que queremos remover
                     (*maiorFilho)->info2 = aux;
-                }else{
+                }else{ 
+                    // caso 2: maior filho tem 1 info
+                    // substitui a info1 da raíz pela maior info do maior filho
                     (*R)->info1 = (*maiorFilho)->info1;
+                    // substitui a info1 do maior filho pela info que queremos remover
                     (*maiorFilho)->info1 = aux;
                 }
-            }else if(pos == 2){ // a posição da info em relação ao nó, ela é uma info 2
+            // caso em que vamos substituir a info2 da raíz
+            }else if(pos == 2){ 
+                // aux guarda a info2 original da raiz
+                aux = (*R)->info2;
+                // caso 1: maior filho tem 2 infos 
+                if((*maiorFilho)->nInfos == 2){
+                    // substitui a info2 da raíz pela maior info do maior filho
+                    (*R)->info2 = (*maiorFilho)->info2;
+                    // substitui a info2 do maior filho pela info que queremos remover
+                    (*maiorFilho)->info2 = aux;
+                }else{ 
+                    // caso 2: maior filho tem 1 info
+                    // substitui a info2 da raíz pela maior info do maior filho
+                    (*R)->info2 = (*maiorFilho)->info1;
+                    // substitui a info1 do maior filho pela info que queremos remover
+                    (*maiorFilho)->info1 = aux;
+                }
             }
+
+            // remove a info que agora está no maior filho
+            removerArvore(maiorFilho, paiM, aux);
         }else{
-            if(pos == 1){
-                maiorFilhoEsq(raiz, &((*maiorFilho)->dir), paiM, pos);
-            }else if(pos == 2){
-                maiorFilhoEsq(raiz, &((*maiorFilho)->cen), paiM, pos);
+            // se tem 2 infos, a maior informação está na subárvore direita
+            if((*maiorFilho)->nInfos == 2){
+                maiorFilhoEsq(R, &(*maiorFilho)->dir, paiM, pos);
+            // se tem 1 info, a maior informação está na subárvore do meio
+            }else if((*maiorFilho)->nInfos == 1){
+                maiorFilhoEsq(R, &(*maiorFilho)->cen, paiM, pos);
             }
         }
     }
+
+    // se a chamada de removerArvore fez com que o maiorFilho ficasse com 0 infos, balanceia
+    balanceia(maiorFilho, paiM);
 }
 
 void removerArvore23(Arvore **R, Arvore **pai, DadoUnion *info){
     int compInfo1 = 2, compInfo2 = 2;
     if(*R){
-        //se for remover a info1
+        // caso 1: remover da info1
         if(strcmp(info->ALBUM.nome, (*R)->info1.ALBUM.nome) == 0){
-            //casos folha
+            // é folha
             if(ehFolha(*R)){
                 if((*R)->nInfos == 2){
+                    // passa a info2 para info1
                     (*R)->info1 = (*R)->info2;
                     (*R)->nInfos = 1;
-                }else (*R)->nInfos = 0;
-            //casos não-folha
+                }else // exclui a info e deixa o nó vazio (será tratado pelo pai/avô) 
+                    (*R)->nInfos = 0;
+            // não é folha
             }else{
+                // precisa substituir pela maior info da subárvore esquerda
                 Arvore **maiorFilho = &((*R)->esq);
                 Arvore **paiM = R;
-                maiorFilhoEsq(R, maiorFilho, paiM, 1); // Tem que fazer ainda
+                maiorFilhoEsq(R, maiorFilho, paiM, 1);
             }
-        // se for remover a info2
+        // caso 2: remover da info2
         }else if((*R)->nInfos == 2 && (strcmp(info->ALBUM.nome, (*R)->info2.ALBUM.nome)) == 0){
-            if(ehFolha(*R)) (*R)->nInfos = 1;
+            // é folha
+            if(ehFolha(*R)) // apenas deixa uma info
+                (*R)->nInfos = 1;
             else{
+                // precisa substituir pela maior info da subárvore do meio
                 Arvore **maiorFilho = &((*R)->cen);
                 Arvore **paiM = R;
                 maiorFilhoEsq(R, paiM, maiorFilho, 2);
-                //sempre resolve com os filhos
-                //filho dir
-                //filho cen
-                //juntar
             }
         }else{
             //recursão
@@ -532,6 +569,7 @@ void removerArvore23(Arvore **R, Arvore **pai, DadoUnion *info){
             else nInfoBusca = buscarNaArvore23((*R)->dir, nome, busca, R);
         }    
     }
-    //código de resolver pai/avô
+
+    // corrige coso algum nó tenha ficado com 0 infos
     balanceia(R, pai);
 }
