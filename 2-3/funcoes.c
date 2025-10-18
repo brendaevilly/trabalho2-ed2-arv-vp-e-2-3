@@ -214,12 +214,10 @@ int buscarNaArvore23(Arvore *raiz, char *nome, Arvore *busca){
                 nInfoBusca = 2;
         }else{
             if(compInfo1 < 0)
-                nInfoBusca = buscarNaArvore23(raiz->esq, nome, busca);
-            else if(compInfo2 != 2){
-                if(compInfo2 < 0)
-                    nInfoBusca = buscarNaArvore23(raiz->cen, nome, busca);
-                else nInfoBusca = buscarNaArvore23(raiz->dir, nome, busca);
-            }
+                nInfoBusca = buscarNaArvore23((*R)->esq, nome, busca, R);
+            else if((*R)->nInfos == 1 || (compInfo2 != 2 && compInfo2 < 0))
+                nInfoBusca = buscarNaArvore23((*R)->cen, nome, busca, R);
+            else nInfoBusca = buscarNaArvore23((*R)->dir, nome, busca, R);
         }
     }
 
@@ -254,12 +252,10 @@ void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes){
             printf("  [ENCONTRADO]\n");
         }else{
             if(compInfo1 < 0)
-                buscarNaArvore23(raiz->esq, nome, comparacoes);
-            else if(compInfo2 != 2){
-                if(compInfo2 < 0)
-                    buscarNaArvore23(raiz->cen, nome, comparacoes);
-                else buscarNaArvore23(raiz->dir, nome, comparacoes);
-            }
+                nInfoBusca = buscarNaArvore23((*R)->esq, nome, busca, R);
+            else if((*R)->nInfos == 1 || (compInfo2 != 2 && compInfo2 < 0))
+                nInfoBusca = buscarNaArvore23((*R)->cen, nome, busca, R);
+            else nInfoBusca = buscarNaArvore23((*R)->dir, nome, busca, R);
         }
     }
 }
@@ -319,12 +315,10 @@ void mostrarArtistasPorEstilo(Arvore *artistas, char *estilo) {
             printf("%s (%s)\n", artistas->info2.ARTISTA.nome, artistas->info2.ARTISTA.estiloMusical);
         }else{
             if(compInfo1 < 0)
-                buscarNaArvore23(artistas->esq, estilo);
-            else if(compInfo2 != 2){
-                if(compInfo2 < 0)
-                    buscarNaArvore23(artistas->cen, estilo);
-                else buscarNaArvore23(artistas->dir, estilo);
-            }
+                nInfoBusca = buscarNaArvore23((*R)->esq, nome, busca, R);
+            else if((*R)->nInfos == 1 || (compInfo2 != 2 && compInfo2 < 0))
+                nInfoBusca = buscarNaArvore23((*R)->cen, nome, busca, R);
+            else nInfoBusca = buscarNaArvore23((*R)->dir, nome, busca, R);
         }
     }
 }
@@ -470,44 +464,56 @@ void liberarArvore(Arvore *raiz){
 
 // ================= REMOVER ======================
 
-int descobrirFilho(Arvore *filho, Arvore *pai){
-    //1 - esq | 2 - cen | 3 - dir
-    int resposta = 0;
-    if(strcmp(filho->info1.ALBUM.nome, pai->info2.ALBUM.nome) > 0) resposta = 3;
-    else if (strcmp(filho->info1.ALBUM.nome, pai->info1.ALBUM.nome) resposta = 2;
-    else resposta = 1;
-
-    return (resposta);
+void maiorFilhoEsq(Arvore **R, Arvore **maiorFilho, Arvore **paiM, int pos){
+    if(*maiorFilho){
+        if((*maiorFilho)->esq == NULL){ // significa que é uma folha
+            DadoUnion aux;
+            if(pos == 1){ // a posição da info em relação ao nó, ela é uma info 1
+                aux = (*maiorFilho)->info1;
+                // remover a info do maior filho
+                if((*maiorFilho)->nInfos == 2){
+                    (*R)->info1 = (*maiorFilho)->info2;
+                    (*maiorFilho)->info2 = aux;
+                }else{
+                    (*R)->info1 = (*maiorFilho)->info1;
+                    (*maiorFilho)->info1 = aux;
+                }
+            }else if(pos == 2){ // a posição da info em relação ao nó, ela é uma info 2
+            }
+        }else{
+            if(pos == 1){
+                maiorFilhoEsq(raiz, &((*maiorFilho)->dir), paiM, pos);
+            }else if(pos == 2){
+                maiorFilhoEsq(raiz, &((*maiorFilho)->cen), paiM, pos);
+            }
+        }
+    }
 }
 
-int removerFolha(Arvore *folha, Arvore *pai){
-    int posicao = descobrirFilho(folha, pai);
-}
-
-int removerArvore23(Arvore **R, DadoUnion *info, Arvore *pai){
-    int removeu = 0, compInfo1 = 2, compInfo2 = 2;
+void removerArvore23(Arvore **R, Arvore **pai, DadoUnion *info){
+    int compInfo1 = 2, compInfo2 = 2;
     if(*R){
+        //se for remover a info1
         if(strcmp(info->ALBUM.nome, (*R)->info1.ALBUM.nome) == 0){
             //casos folha
             if(ehFolha(*R)){
-                if((*R)->infos == 2){
+                if((*R)->nInfos == 2){
                     (*R)->info1 = (*R)->info2;
                     (*R)->nInfos = 1;
-                    removeu = 1;
-                }else{
-
-                }
+                }else (*R)->nInfos = 0;
             //casos não-folha
             }else{
-                //filho centro
-                //filho direita se existir
-                //filho esquerda
-                //pai, não recebe 1
+                Arvore **maiorFilho = &((*R)->esq);
+                Arvore **paiM = R;
+                maiorFilhoEsq(R, maiorFilho, paiM, 1); // Tem que fazer ainda
             }
-        }else if(strcmp(info->ALBUM.nome, (*R)->info2.ALBUM.nome) == 0){
-            if(ehFolha(*R)){
-
-            }else{
+        // se for remover a info2
+        }else if((*R)->nInfos == 2 && (strcmp(info->ALBUM.nome, (*R)->info2.ALBUM.nome)) == 0){
+            if(ehFolha(*R)) (*R)->nInfos = 1;
+            else{
+                Arvore **maiorFilho = &((*R)->cen);
+                Arvore **paiM = R;
+                maiorFilhoEsq(R, paiM, maiorFilho, 2);
                 //sempre resolve com os filhos
                 //filho dir
                 //filho cen
@@ -521,15 +527,11 @@ int removerArvore23(Arvore **R, DadoUnion *info, Arvore *pai){
 
             if(compInfo1 < 0)
                 nInfoBusca = buscarNaArvore23((*R)->esq, nome, busca, R);
-            else if(compInfo2 != 2){
-                if(compInfo2 < 0)
-                    nInfoBusca = buscarNaArvore23((*R)->cen, nome, busca, R);
-                else nInfoBusca = buscarNaArvore23((*R)->dir, nome, busca, R);
-            }
-            //código de resolver pai/avô
-            if(!removeu){}
-        }
+            else if((*R)->nInfos == 1 || (compInfo2 != 2 && compInfo2 < 0))
+                nInfoBusca = buscarNaArvore23((*R)->cen, nome, busca, R);
+            else nInfoBusca = buscarNaArvore23((*R)->dir, nome, busca, R);
+        }    
     }
-
-    return (removeu);
+    //código de resolver pai/avô
+    balanceia(R, pai);
 }

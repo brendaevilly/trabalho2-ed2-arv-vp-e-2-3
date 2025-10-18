@@ -79,4 +79,7 @@ void mostrarMusicasDeArtista(Arvore *artistas, char *nomeArtista);
 void liberarMusicas(Musica *lista);
 void liberarArvore(Arvore *raiz);
 
+// REMOVER  
+void removerArvore23(Arvore **R, Arvore **pai, DadoUnion *info);
+
 #endif

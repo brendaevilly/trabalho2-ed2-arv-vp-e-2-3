@@ -130,13 +130,13 @@ void trocaCor(Arvore **raiz){
 
 void balanceamento(Arvore **raiz) {
     if (*raiz) {
-        if (((*raiz)->dir && pegaCor((*raiz)->dir) == VERMELHO) && (!((*raiz)->esq)|| pegaCor((*raiz)->esq) == PRETO)) 
+        if ((*raiz)->dir && pegaCor((*raiz)->dir) == VERMELHO && pegaCor((*raiz)->esq) == PRETO)
             rotacionarEsquerda(raiz);
 
-        if (((*raiz)->esq && pegaCor((*raiz)->esq) == VERMELHO) && ((*raiz)->esq->esq && pegaCor((*raiz)->esq->esq) == VERMELHO)) 
+        if (pegaCor((*raiz)->esq) == VERMELHO && ((*raiz)->esq->esq && pegaCor((*raiz)->esq->esq) == VERMELHO)) 
             rotacionarDireita(raiz);
         
-        if (((*raiz)->esq && (*raiz)->dir) && pegaCor((*raiz)->esq) == VERMELHO && pegaCor((*raiz)->dir) == VERMELHO) 
+        if (pegaCor((*raiz)->esq) == VERMELHO && pegaCor((*raiz)->dir) == VERMELHO) 
             trocaCor(raiz);
     }
 }
