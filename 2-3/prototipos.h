@@ -79,9 +79,21 @@ void mostrarMusicasDeArtista(Arvore *artistas, char *nomeArtista);
 void liberarMusicas(Musica *lista);
 void liberarArvore(Arvore *raiz);
 
-// REMOVER  
+// REMOVER 
+int ehVazio(Arvore *no);
+void deQuemSouFilho(Arvore *R, Arvore *pai, char *posicao);
+
+void onda_CentroParaDireita_CentroDuasInfos(Arvore **R, Arvore **pai);
+void onda_CentroParaDireita_CentroUmaInfo(Arvore **R, Arvore **pai);
+void onda_EsquerdaParaCentro_EsquerdaDuasInfos(Arvore **R, Arvore **pai);
+void onda_EsquerdaParaCentro_EsquerdaEmaInfo_PaiDuasInfos(Arvore **R, Arvore **pai);
+void onda_EsquerdaParaCentro_EsquerdaEmaInfo_PaiUmaInfo(Arvore **R, Arvore **pai);
+void onda_CentroParaEsquerda_CentroDuasInfos(Arvore **R, Arvore **pai);
+void onda_CentroParaEsquerda_CentroUmaInfo_PaiDuasInfos(Arvore **R, Arvore **pai);
+void onda_CentroParaEsquerda_CentroUmaInfo_PaiUmaInfo(Arvore **R, Arvore **pai);
+
 void balanceia(No **R, No **pai);
-void maiorFilhoEsq(Arvore **R, Arvore **maiorFilho, Arvore **paiM, int pos);
+void maiorFilhoEsq(Arvore **R, Arvore **maiorFilho, Arvore **paiM, int posicaoInfoQueVaiSerRemovida);
 void removerArvore23(Arvore **R, Arvore **pai, DadoUnion *info);
 
 #endif

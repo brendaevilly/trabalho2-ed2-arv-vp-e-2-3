@@ -464,294 +464,281 @@ void liberarArvore(Arvore *raiz){
 
 // ================= REMOVER ======================
 
-// balanceia a árvore após remoção
-// as rotações ainda iram ser quebradas em funções separadas
-void balanceia(No **R, No **pai){
-    // só faz sentido balancear se o nó existir
+int ehVazio(Arvore *no){
+    int vazio = 0;
+    if(no->nInfos == 0) vazio = 1;
+    return (vazio);
+}
+
+void deQuemSouFilho(Arvore *R, Arvore *pai, char *posicao) {
+    if (R == pai->esq) strcpy(posicao, "ESQUERDA");
+    else if (R == pai->cen) strcpy(posicao, "CENTRO");
+    else (R == pai->dir) strcpy(posicao, "DIREITA");
+}
+
+void onda_CentroParaDireita_CentroDuasInfos(Arvore **R, Arvore **pai){
+    // info 2 do pai desce para o nó vazio
+    (*R)->info1 = (*pai)->info2;
+    (*R)->nInfos = 1;
+    // info 2 do meio sobe para a info 2 do pai
+    (*pai)->info2 = (*pai)->cen->info2;
+    (*pai)->cen->nInfos = 1;
+    // ajusta os filhos
+    (*R)->esq = (*pai)->cen->dir;
+    (*pai)->cen->dir = NULL;
+}
+
+void onda_CentroParaDireita_CentroUmaInfo(Arvore **R, Arvore **pai){
+    // info 2 do pai desce para o nó vazio e ajusta os filhos
+    (*R)->info2 = (*pai)->info2;
+    (*R)->dir = (*R)->cen;
+
+    // info 1 do centro do pai vai para a info um do nó vazio e nInfos são atualizados
+    (*R)->info1 = (*pai)->cen->info1;
+    (*R)->nInfos = 2;
+    (*pai)->nInfos = 1;
+
+    // centro e esquerda do pai vão para meio e esquerda do nó vazio
+    (*R)->cen = (*pai)->cen->cen;
+    (*R)->esq = (*pai)->cen->esq;
+
+    // centro do pai é liberado
+    free((*pai)->cen);
+
+    // centro do pai recebe o nó vazio e direita do pai é nula
+    (*pai)->cen = *R;
+    (*pai)->dir = NULL;
+}
+
+void onda_EsquerdaParaCentro_EsquerdaDuasInfos(Arvore **R, Arvore **pai){
+    // info 1 do pai desce para o nó vazio
+    (*R)->info1 = (*pai)->info1;
+    (*R)->nInfos = 1;
+
+    // info 2 da esquerda sobe para a info 1 do pai
+    (*pai)->info1 = (*pai)->esq->info2;
+    (*pai)->esq->nInfos = 1;
+    
+    // ajusta os filhos
+    (*R)->esq = (*pai)->esq->dir;
+    (*pai)->esq->dir = NULL;
+}
+
+void onda_EsquerdaParaCentro_EsquerdaEmaInfo_PaiDuasInfos(Arvore **R, Arvore **pai){
+    // info1 do pai desce para a raiz
+    (*R)->info2 = (*pai)->info1;
+    // info1 da esquerda passou para a raiz
+    (*R)->info1 = (*pai)->esq->info1;
+    (*R)->nInfos = 2;
+
+    // ajusta os filhos do nó "vazio"
+    (*R)->dir = (*R)->cen;
+    (*R)->cen = (*pai)->esq->cen;
+    (*R)->esq = (*pai)->esq->esq;
+
+    // ajusta o pai  
+    (*pai)->info1 = (*pai)->info2;
+    (*pai)->nInfos = 1;
+
+    // ajusta os filhos do pai
+    free((*pai)->esq);
+    (*pai)->esq = *R;
+    (*pai)->cen = (*pai)->dir;
+    (*pai)->dir = NULL;
+}
+
+void onda_EsquerdaParaCentro_EsquerdaEmaInfo_PaiUmaInfo(Arvore **R, Arvore **pai){
+    // info2 do nó vazio recebe info1 do pai
+    (*R)->info2 = (*pai)->info1;
+    // info1 do nó vazio recebe info1 da esquerda do pai
+    (*R)->info1 = (*pai)->esq->info1;
+    (*R)->nInfos = 2;
+
+    // deixa o pai vazio (resolvido na próxima chamada)
+    (*pai)->nInfos = 0;
+
+    // ajusta os filhos do nó vazio
+    (*R)->dir = (*R)->cen;
+    (*R)->cen = (*pai)->esq->cen;
+    (*R)->esq = (*pai)->esq->esq;
+
+    // libera a esquerda do pai
+    free((*pai)->esq);
+    (*pai)->esq = NULL;
+}
+
+void onda_CentroParaEsquerda_CentroDuasInfos(Arvore **R, Arvore **pai){
+    // info1 do pai desce para o nó vazio
+    (*R)->info1 = (*pai)->info1;
+    (*R)->nInfos = 1;
+
+    // info1 do centro sobe para a info1 do pai
+    (*pai)->info1 = (*pai)->cen->info1;
+    (*pai)->cen->info1 = (*pai)->cen->info2;
+    (*pai)->cen->nInfos = 1;
+
+    // ajusta os filhos no nó "vazio"
+    (*R)->esq = (*R)->cen;
+    (*R)->cen = (*pai)->cen->esq;
+
+    // ajusta os filhos do pai
+    (*pai)->cen->esq = (*pai)->cen->cen;
+    (*pai)->cen->cen = (*pai)->cen->dir;
+    (*pai)->cen->dir = NULL;
+}
+
+void onda_CentroParaEsquerda_CentroUmaInfo_PaiDuasInfos(Arvore **R, Arvore **pai){
+    // info1 do pai desce para o nó vazio
+    (*R)->info1 = (*pai)->info1;
+    // info1 do centro do pai vai para o nó vazio
+    (*R)->info2 = (*pai)->cen->info1;
+    (*R)->nInfos = 2;
+
+    // ajusta os filhos do nó "vazio"
+    (*R)->esq = (*R)->cen;
+    (*R)->cen = (*pai)->cen->esq;
+    (*R)->dir = (*pai)->cen->cen;
+
+    // ajusta o pai
+    (*pai)->info1 = (*pai)->info2;
+    (*pai)->nInfos = 1;
+
+    // ajusta os filhos do pai
+    free((*pai)->cen);
+    (*pai)->cen = (*pai)->dir;
+    (*pai)->dir = NULL;
+}
+
+void onda_CentroParaEsquerda_CentroUmaInfo_PaiUmaInfo(Arvore **R, Arvore **pai){
+    // info1 do pai desce para o nó vazio
+    (*R)->info1 = (*pai)->info1;
+    // info1 do centro do pai vai para o nó vazio
+    (*R)->info2 = (*pai)->cen->info1;
+    (*R)->nInfos = 2;
+
+    // ajusta os filhos do nó "vazio"
+    (*R)->esq = (*R)->cen;
+    (*R)->cen = (*pai)->cen->esq;
+    (*R)->dir = (*pai)->cen->cen;
+
+    // deixa o pai vazio (resolvido na próxima chamada)
+    (*pai)->nInfos = 0;
+
+    // ajusta os filhos do pai
+    free((*pai)->cen);
+    (*pai)->cen = (*R);
+    (*pai)->esq = NULL;
+}
+
+void balanceia(Arvore **R, Arvore **pai){
     if(*R){
-        // só precisamos balancear se o nó estiver vazio
-        if((*R)->nInfos == 0){
-            // se o pai não for nulo, podemos pedir emprestimo aos irmãos
+        if(ehVazio(*R)){
             if(*pai){
-                // caso 1: raíz é filha da direita
-                if(*R == (*pai)->dir){
-                    // filho do meio tem 2 infos, pode emprestar
-                    if((*pai)->cen->nInfos == 2){
-                        // info 2 do pai desce para o nó vazio
-                        (*R)->info1 = (*pai)->info2;
-                        (*R)->nInfos = 1;
-                        // info 2 do meio sobe para a info 2 do pai
-                        (*pai)->info2 = (*pai)->cen->info2;
-                        (*pai)->cen->nInfos = 1;
-                        // ajusta os filhos
-                        (*R)->esq = (*pai)->cen->dir;
-                        (*pai)->cen->dir = NULL;
-                    } // filho do meio tem 1 info, não pode emprestar
-                    else if((*pai)->cen->nInfos == 1){
-                        // info 2 do pai desce para o nó vazio e ajusta os filhos
-                        (*R)->info2 = (*pai)->info2;
-                        (*R)->dir = (*R)->cen;
 
-                        // info 1 do centro do pai vai para a info um do nó vazio e nInfos são atualizados
-                        (*R)->info1 = (*pai)->cen->info1;
-                        (*R)->nInfos = 2;
-                        (*pai)->nInfos = 1;
+                char posicao[20];
+                deQuemSouFilho(R, pai, posicao);
 
-                        // centro e esquerda do pai vão para meio e esquerda do nó vazio
-                        (*R)->cen = (*pai)->cen->cen;
-                        (*R)->esq = (*pai)->cen->esq;
-
-                        // centro do pai é liberado
-                        free((*pai)->cen);
-
-                        // centro do pai recebe o nó vazio e direita do pai é nula
-                        (*pai)->cen = *R;
-                        (*pai)->dir = NULL;
-
-                    }
-                } // caso 2: raíz é filha do centro
-                else if(*R == (*pai)->cen){
-                    // se o filho da esquerda tem 2 infos, pode emprestar
-                    if((*pai)->esq->nInfos == 2){
-                        // info 1 do pai desce para o nó vazio
-                        (*R)->info1 = (*pai)->info1;
-                        (*R)->nInfos = 1;
-
-                        // info 2 da esquerda sobe para a info 1 do pai
-                        (*pai)->info1 = (*pai)->esq->info2;
-                        (*pai)->esq->nInfos = 1;
-                        
-                        // ajusta os filhos
-                        (*R)->esq = (*pai)->esq->dir;
-                        (*pai)->esq->dir = NULL;
-                    } // filho da esquerda tem 1 info, não pode emprestar 
+                if(strcmp(posicao, "DIREITA") == 0){
+                    if((*pai)->cen->nInfos == 2)
+                        onda_CentroParaDireita_CentroDuasInfos(R, pai);
+                    else if((*pai)->cen->nInfos == 1)
+                        onda_CentroParaDireita_CentroUmaInfo(R, pai);
+                }
+                else if(strcmp(posicao, "CENTRO") == 0){
+                    if((*pai)->esq->nInfos == 2)
+                        onda_EsquerdaParaCentro_EsquerdaDuasInfos(R, pai);
                     else if((*pai)->esq->nInfos == 1){
-                        // pai tem 2 infos
-                        if((*pai)->nInfos == 2){
-                            // info1 do pai desce para a raiz
-                            (*R)->info2 = (*pai)->info1;
-                            // info1 da esquerda passou para a raiz
-                            (*R)->info1 = (*pai)->esq->info1;
-                            (*R)->nInfos = 2;
-
-                            // ajusta os filhos do nó "vazio"
-                            (*R)->dir = (*R)->cen;
-                            (*R)->cen = (*pai)->esq->cen;
-                            (*R)->esq = (*pai)->esq->esq;
-
-                            // ajusta o pai  
-                            (*pai)->info1 = (*pai)->info2;
-                            (*pai)->nInfos = 1;
-
-                            // ajusta os filhos do pai
-                            free((*pai)->esq);
-                            (*pai)->esq = *R;
-                            (*pai)->cen = (*pai)->dir;
-                            (*pai)->dir = NULL;
-                        } // pai tem 1 info
-                        else if((*pai)->nInfos == 1){
-                            // info2 do nó vazio recebe info1 do pai
-                            (*R)->info2 = (*pai)->info1;
-                            // info1 do nó vazio recebe info1 da esquerda do pai
-                            (*R)->info1 = (*pai)->esq->info1;
-                            (*R)->nInfos = 2;
-
-                            // deixa o pai vazio (resolvido na próxima chamada)
-                            (*pai)->nInfos = 0;
-
-                            // ajusta os filhos do nó vazio
-                            (*R)->dir = (*R)->cen;
-                            (*R)->cen = (*pai)->esq->cen;
-                            (*R)->esq = (*pai)->esq->esq;
-
-                            // libera a esquerda do pai
-                            free((*pai)->esq);
-                            (*pai)->esq = NULL;
-                            (*pai)->esq = NULL;
-                        }
-                    }
-                } // caso 3: raíz é filha da esquerda
-                else if(*R == (*pai)->esq){
-                    // filho do centro tem 2 infos, pode emprestar
-                    if((*pai)->cen->nInfos == 2){
-                        // info1 do pai desce para o nó vazio
-                        (*R)->info1 = (*pai)->info1;
-                        (*R)->nInfos = 1;
-
-                        // info1 do centro sobe para a info1 do pai
-                        (*pai)->info1 = (*pai)->cen->info1;
-                        (*pai)->cen->info1 = (*pai)->cen->info2;
-                        (*pai)->cen->nInfos = 1;
-
-                        // ajusta os filhos no nó "vazio"
-                        (*R)->esq = (*R)->cen;
-                        (*R)->cen = (*pai)->cen->esq;
-
-                        // ajusta os filhos do pai
-                        (*pai)->cen->esq = (*pai)->cen->cen;
-                        (*pai)->cen->cen = (*pai)->cen->dir;
-                        (*pai)->cen->dir = NULL;
-                    }
-                    // filho do centro tem 1 info, não pode emprestar
-                    else if((*pai)->cen->nInfos == 1){
-                        // pai tem 2 infos
-                        if((*pai)->nInfos == 2){
-                            // info1 do pai desce para o nó vazio
-                            (*R)->info1 = (*pai)->info1;
-                            // info1 do centro do pai vai para o nó vazio
-                            (*R)->info2 = (*pai)->cen->info1;
-                            (*R)->nInfos = 2;
-
-                            // ajusta os filhos do nó "vazio"
-                            (*R)->esq = (*R)->cen;
-                            (*R)->cen = (*pai)->cen->esq;
-                            (*R)->dir = (*pai)->cen->cen;
-
-                            // ajusta o pai
-                            (*pai)->info1 = (*pai)->info2;
-                            (*pai)->nInfos = 1;
-
-                            // ajusta os filhos do pai
-                            free((*pai)->cen);
-                            (*pai)->cen = (*pai)->dir;
-                            (*pai)->dir = NULL;
-                        } // pai tem 1 info
-                        else if((*pai)->nInfos == 1){
-                            // info1 do pai desce para o nó vazio
-                            (*R)->info1 = (*pai)->info1;
-                            // info1 do centro do pai vai para o nó vazio
-                            (*R)->info2 = (*pai)->cen->info1;
-                            (*R)->nInfos = 2;
-
-                            // ajusta os filhos do nó "vazio"
-                            (*R)->esq = (*R)->cen;
-                            (*R)->cen = (*pai)->cen->esq;
-                            (*R)->dir = (*pai)->cen->cen;
-
-                            // deixa o pai vazio (resolvido na próxima chamada)
-                            (*pai)->nInfos = 0;
-
-                            // ajusta os filhos do pai
-                            free((*pai)->cen);
-                            (*pai)->cen = (*R);
-                            (*pai)->esq = NULL;
-                        }
+                        if((*pai)->nInfos == 2)
+                            onda_EsquerdaParaCentro_EsquerdaEmaInfo_PaiDuasInfos(R, pai);
+                        else if((*pai)->nInfos == 1)
+                            onda_EsquerdaParaCentro_EsquerdaEmaInfo_PaiUmaInfo(R, pai);
                     }
                 }
-            } // se o pai for nulo, significa que o nó vazio é a raíz
-            else{
-                *R = (*R)->cen;
+                else if(strcmp(posicao, "ESQUERDA") == 0){
+                    if((*pai)->cen->nInfos == 2)
+                        onda_CentroParaEsquerda_CentroDuasInfos(R, pai);
+                    else if((*pai)->cen->nInfos == 1){
+                        if((*pai)->nInfos == 2)
+                            onda_CentroParaEsquerda_CentroUmaInfo_PaiDuasInfos(R, pai);
+                        else if((*pai)->nInfos == 1)
+                            onda_CentroParaEsquerda_CentroUmaInfo_PaiUmaInfo(R, pai);
+                    }
+                }
             }
+            else *R = (*R)->cen;
         }
     }
 }
 
 // encontra o maior filho da subárvore esquerda (ou meio dependendo da pos)
-void maiorFilhoEsq(Arvore **R, Arvore **maiorFilho, Arvore **paiM, int pos){
-    // verifica se a subárvore não é nula
+void maiorFilhoEsq(Arvore **R, Arvore **maiorFilho, Arvore **paiM, int posicaoInfoQueVaiSerRemovida){
     if(*maiorFilho){
-        // verifica se é folha
-        if((*maiorFilho)->esq == NULL){ 
-            // variavel que vai guardar a info a ser removida
-            DadoUnion aux;
-            // caso em que vamos substituir a info1 da raíz
-            if(pos == 1){
-                // aux guarda a info1 original da raiz
-                aux = (*R)->info1;
-                // caso 1: maior filho tem 2 infos 
+        if(ehFolha(*maiorFilho)){
+            DadoUnion infoQueVaiSerRemovida;
+            if(posicaoInfoQueVaiSerRemovida == 1){
+                infoQueVaiSerRemovida = (*R)->info1;
                 if((*maiorFilho)->nInfos == 2){
-                    // substitui a info1 da raíz pela maior info do maior filho
                     (*R)->info1 = (*maiorFilho)->info2;
-                    // substitui a info2 do maior filho pela info que queremos remover
-                    (*maiorFilho)->info2 = aux;
+                    (*maiorFilho)->info2 = infoQueVaiSerRemovida;
                 }else{ 
-                    // caso 2: maior filho tem 1 info
-                    // substitui a info1 da raíz pela maior info do maior filho
                     (*R)->info1 = (*maiorFilho)->info1;
-                    // substitui a info1 do maior filho pela info que queremos remover
-                    (*maiorFilho)->info1 = aux;
+                    (*maiorFilho)->info1 = infoQueVaiSerRemovida;
                 }
-            // caso em que vamos substituir a info2 da raíz
-            }else if(pos == 2){ 
-                // aux guarda a info2 original da raiz
-                aux = (*R)->info2;
-                // caso 1: maior filho tem 2 infos 
+            }else if(posicaoInfoQueVaiSerRemovida == 2){ 
+                infoQueVaiSerRemovida = (*R)->info2;
                 if((*maiorFilho)->nInfos == 2){
-                    // substitui a info2 da raíz pela maior info do maior filho
                     (*R)->info2 = (*maiorFilho)->info2;
-                    // substitui a info2 do maior filho pela info que queremos remover
-                    (*maiorFilho)->info2 = aux;
+                    (*maiorFilho)->info2 = infoQueVaiSerRemovida;
                 }else{ 
-                    // caso 2: maior filho tem 1 info
-                    // substitui a info2 da raíz pela maior info do maior filho
                     (*R)->info2 = (*maiorFilho)->info1;
-                    // substitui a info1 do maior filho pela info que queremos remover
-                    (*maiorFilho)->info1 = aux;
+                    (*maiorFilho)->info1 = infoQueVaiSerRemovida;
                 }
             }
-
-            // remove a info que agora está no maior filho
-            removerArvore(maiorFilho, paiM, aux);
+            removerArvore23(maiorFilho, paiM, &infoQueVaiSerRemovida);
         }else{
-            // se tem 2 infos, a maior informação está na subárvore direita
             if((*maiorFilho)->nInfos == 2){
-                maiorFilhoEsq(R, &(*maiorFilho)->dir, paiM, pos);
-            // se tem 1 info, a maior informação está na subárvore do meio
+                maiorFilhoEsq(R, &(*maiorFilho)->dir, paiM, posicaoInfoQueVaiSerRemovida);
             }else if((*maiorFilho)->nInfos == 1){
-                maiorFilhoEsq(R, &(*maiorFilho)->cen, paiM, pos);
+                maiorFilhoEsq(R, &(*maiorFilho)->cen, paiM, posicaoInfoQueVaiSerRemovida);
             }
         }
     }
-
-    // se a chamada de removerArvore fez com que o maiorFilho ficasse com 0 infos, balanceia
     balanceia(maiorFilho, paiM);
 }
 
 void removerArvore23(Arvore **R, Arvore **pai, DadoUnion *info){
     int compInfo1 = 2, compInfo2 = 2;
     if(*R){
-        // caso 1: remover da info1
         if(strcmp(info->ALBUM.nome, (*R)->info1.ALBUM.nome) == 0){
-            // é folha
             if(ehFolha(*R)){
                 if((*R)->nInfos == 2){
-                    // passa a info2 para info1
                     (*R)->info1 = (*R)->info2;
                     (*R)->nInfos = 1;
-                }else // exclui a info e deixa o nó vazio (será tratado pelo pai/avô) 
-                    (*R)->nInfos = 0;
-            // não é folha
+                }else (*R)->nInfos = 0;
             }else{
-                // precisa substituir pela maior info da subárvore esquerda
                 Arvore **maiorFilho = &((*R)->esq);
                 Arvore **paiM = R;
                 maiorFilhoEsq(R, maiorFilho, paiM, 1);
             }
-        // caso 2: remover da info2
         }else if((*R)->nInfos == 2 && (strcmp(info->ALBUM.nome, (*R)->info2.ALBUM.nome)) == 0){
-            // é folha
-            if(ehFolha(*R)) // apenas deixa uma info
-                (*R)->nInfos = 1;
+            if(ehFolha(*R)) (*R)->nInfos = 1;
             else{
-                // precisa substituir pela maior info da subárvore do meio
                 Arvore **maiorFilho = &((*R)->cen);
                 Arvore **paiM = R;
-                maiorFilhoEsq(R, paiM, maiorFilho, 2);
+                maiorFilhoEsq(R, maiorFilho, paiM, 2);
             }
         }else{
-            //recursão
             compInfo1 = strcmp(nome, (*R)->info1.ARTISTA.nome);
             if((*R)->nInfos == 2)
                 compInfo2 = strcmp(nome, (*R)->info2.ARTISTA.nome);
 
             if(compInfo1 < 0)
-                nInfoBusca = buscarNaArvore23((*R)->esq, nome, busca, R);
+                buscarNaArvore23((*R)->esq, nome, busca, R);
             else if((*R)->nInfos == 1 || (compInfo2 != 2 && compInfo2 < 0))
-                nInfoBusca = buscarNaArvore23((*R)->cen, nome, busca, R);
-            else nInfoBusca = buscarNaArvore23((*R)->dir, nome, busca, R);
+                buscarNaArvore23((*R)->cen, nome, busca, R);
+            else buscarNaArvore23((*R)->dir, nome, busca, R);
         }    
     }
 
-    // corrige coso algum nó tenha ficado com 0 infos
     balanceia(R, pai);
 }
