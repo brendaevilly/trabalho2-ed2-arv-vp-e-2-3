@@ -72,11 +72,10 @@ int inserirMusica(Musica **lista, Musica *novaMusica);
 /* --- Busca --- */
 Arvore *buscarArvRubroNegra(Arvore *raiz, char *nome);
 Musica *buscarMusica(Musica *lista, char *titulo);
-Arvore *buscarAlbumDeArtista(Arvore *raiz, char *tituloAlbum);
-Musica *buscarMusicaDeAlbum(Arvore *album, char *tituloAlbum, char *tituloMusica){
+void buscarAlbumDeArtista(Arvore *artista, char *tituloAlbum, Arvore **busca);
+Musica *buscarMusicaDeAlbum(Arvore *album, char *tituloAlbum, char *tituloMusica);
 Musica *buscarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusica);
-Musica *buscarMusicaEmAlbuns(Arvore *albuns, char *titulo); /* procura em todos os álbuns de uma árvore de ALBUMs */
-
+void buscarMusicaEmAlbuns(Arvore *albuns, Musica **busca, char *tituloMusica);
 /* --- Remoção --- */
 int removerArvRubroNegra(Arvore **raiz, char *nome);
 int removeNoRN(Arvore **raiz, char *nome); 
