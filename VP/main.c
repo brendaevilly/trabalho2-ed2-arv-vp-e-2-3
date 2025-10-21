@@ -104,7 +104,7 @@ int main(){
                         Musica *novaMusica = alocarMusica();
                         if (novaMusica != NULL) {
                             preencherMusica(novaMusica);
-                            if (inserirMusica(&album->dado.ALBUM.musicas, *novaMusica)) {
+                            if (inserirMusica(&album->dado.ALBUM.musicas, &novaMusica)) {
                                 album->dado.ALBUM.numeroMusicas++;
                                 printf("\n Música cadastrada com sucesso!\n");
                             } else {

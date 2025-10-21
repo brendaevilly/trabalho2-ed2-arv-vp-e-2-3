@@ -52,6 +52,7 @@ Arvore *inicializar();
 Musica *inicializarM();
 void deixarMaiusculo(char *str);
 struct tm *tempoAtual();
+int pegaCor(Arvore *no);
 
 /* --- Alocação e preenchimento --- */
 Arvore *alocarTree(TipoDado tipo);
@@ -69,7 +70,7 @@ void atualizaCorRaiz(Arvore **raiz);
 /* --- Inserção --- */
 int inserirArvRubroNegra(Arvore **raiz, Arvore *novoNo);
 int inserirNo(Arvore **raiz, Arvore *novoNo);
-int inserirMusica(Musica **lista, Musica novaMusica);
+int inserirMusica(Musica **lista, Musica *novaMusica);
 
 /* --- Busca --- */
 Arvore *buscarArvRubroNegra(Arvore *raiz, char *nome);
@@ -77,7 +78,7 @@ Musica *buscarMusica(Musica *lista, char *titulo);
 Arvore *buscarAlbumDeArtista(Arvore *raiz, char *tituloAlbum);
 Musica *buscarMusicaDeAlbum(Arvore *raiz, char *nomeArtista, char *tituloAlbum, char *tituloMusica);
 Musica *buscarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusica);
-Musica *buscarMusicaEmAlbuns(Arvore *albuns, char *titulo); /* procura em todos os álbuns de uma árvore de ALBUMs */
+Musica *buscarMusicaEmAlbuns(Arvore *albuns, char *titulo); 
 
 /* --- Remoção --- */
 int removerArvRubroNegra(Arvore **raiz, char *nome);
