@@ -29,7 +29,6 @@ void menu(){
     printf("12 - Remover musica de um album\n");
     printf("13 - Remover album de um artista\n");
     printf("14 - Remover artista\n");
-    printf("15 - Remover musica de um artista\n");
     printf("-----------------------------------------\n");
     printf("0  - Sair\n");
     printf("====================================\n");
