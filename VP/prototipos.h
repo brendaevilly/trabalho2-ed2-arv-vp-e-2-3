@@ -1,8 +1,6 @@
 #ifndef PROTOTIPOS_H
 #define PROTOTIPOS_H
 
-//Att
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -74,11 +72,10 @@ int inserirMusica(Musica **lista, Musica *novaMusica);
 /* --- Busca --- */
 Arvore *buscarArvRubroNegra(Arvore *raiz, char *nome);
 Musica *buscarMusica(Musica *lista, char *titulo);
-Arvore *buscarAlbumDeArtista(Arvore *raiz, char *tituloAlbum);
-Musica *buscarMusicaDeAlbum(Arvore *album, char *tituloAlbum, char *tituloMusica){
+void buscarAlbumDeArtista(Arvore *artista, char *tituloAlbum, Arvore **busca);
+Musica *buscarMusicaDeAlbum(Arvore *album, char *tituloAlbum, char *tituloMusica);
 Musica *buscarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusica);
-Musica *buscarMusicaEmAlbuns(Arvore *albuns, char *titulo); /* procura em todos os álbuns de uma árvore de ALBUMs */
-
+void buscarMusicaEmAlbuns(Arvore *albuns, Musica **busca, char *tituloMusica);
 /* --- Remoção --- */
 int removerArvRubroNegra(Arvore **raiz, char *nome);
 int removeNoRN(Arvore **raiz, char *nome); 
@@ -104,7 +101,6 @@ void experimentoBusca30(Arvore *raiz);
 void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes);
 void liberarMusicas(Musica *lista);
 void liberarAlbuns(Arvore *albuns);
-void liberarArtistas(Arvore *raiz);
 void liberarArvore(Arvore *raiz);
 
 #endif
