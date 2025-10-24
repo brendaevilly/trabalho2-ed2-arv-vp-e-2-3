@@ -67,7 +67,7 @@ void preencheInfo(TipoDado tipo, DadoUnion *info){
         info->ARTISTA.tipo = (TipoArtista) op;
 
         info->ARTISTA.numeroAlbuns = 0;
-        info->ARTISTA.albuns = inicializar(); 
+        info->ARTISTA.albuns = inicializar();
     }else if(tipo == ALBUM){
         printf("Título: ");
         scanf(" %[^\n]", info->ALBUM.nome);
@@ -85,10 +85,11 @@ void preencheInfo(TipoDado tipo, DadoUnion *info){
     }else printf("[ERRO] Tipo inválido.\n");
 }
 
-Arvore *criaNo(DadoUnion info, Arvore *Fesq, Arvore *Fcen){
+Arvore *criaNo(DadoUnion info, Arvore *Fesq, Arvore *Fcen, TipoDado tipo){
     Arvore *no;
     no = (Arvore *)malloc(sizeof(Arvore));
     no->info1 = info;
+    no->tipo = tipo;
     no->esq = Fesq;
     no->cen = Fcen;
     no->dir = NULL;
@@ -110,23 +111,23 @@ void adicionaInfo(Arvore **no, DadoUnion info, Arvore *filho){
     (*no)->nInfos = 2;
 }
 
-Arvore *quebrarNo(Arvore **no, DadoUnion info, Arvore *filho, DadoUnion *sobe){
+Arvore *quebrarNo(Arvore **no, DadoUnion info, Arvore *filho, DadoUnion *sobe, TipoDado tipo){
     Arvore *maior;
     if(strcmp(info.ARTISTA.nome, (*no)->info2.ARTISTA.nome) > 0){
         *sobe = (*no)->info2;
         (*no)->nInfos = 1;
-        maior = criaNo(info, (*no)->dir, filho);
+        maior = criaNo(info, (*no)->dir, filho, tipo);
         (*no)->dir = NULL;
     }else if(strcmp(info.ARTISTA.nome, (*no)->info1.ARTISTA.nome) > 0){
         *sobe = info;
-        maior = criaNo((*no)->info2, filho, (*no)->dir);
+        maior = criaNo((*no)->info2, filho, (*no)->dir, tipo);
         (*no)->dir = NULL;
         (*no)->nInfos = 1;
     }else{
         *sobe = (*no)->info1;
         (*no)->info1 = info;
         (*no)->nInfos = 1;
-        maior = criaNo((*no)->info2, (*no)->cen, (*no)->dir);
+        maior = criaNo((*no)->info2, (*no)->cen, (*no)->dir, tipo);
         (*no)->cen = filho;
         (*no)->dir = NULL;
     }
@@ -134,33 +135,35 @@ Arvore *quebrarNo(Arvore **no, DadoUnion info, Arvore *filho, DadoUnion *sobe){
     return (maior);
 }
 
-Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe, int *inserido) {
+Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe, int *inserido, TipoDado tipo) {
     Arvore *maior = inicializar();
 
     if (!(*R)) {
-        *R = criaNo(info, NULL, NULL);
+        *R = criaNo(info, NULL, NULL, tipo);
         *inserido = 1; // nó criado, inserção aconteceu
     } else {
+        printf("%s\n", (*R)->info1.ARTISTA.nome);
+        if((*R)->nInfos == 2) printf("%s\n", (*R)->info2.ARTISTA.nome);
         if (ehFolha(*R)) {
             if ((*R)->nInfos == 1) {
                 adicionaInfo(R, info, NULL);
                 *inserido = 1; // inserido em nó folha
             } else {
-                maior = quebrarNo(R, info, NULL, sobe);
+                maior = quebrarNo(R, info, NULL, sobe, tipo);
                 *inserido = 1;
                 if (!Pai) {
-                    *R = criaNo(*sobe, *R, maior);
+                    *R = criaNo(*sobe, *R, maior, tipo);
                     maior = NULL;
                 }
             }
         } else {
             // Escolhe subárvore de inserção
             if (strcmp(info.ALBUM.nome, (*R)->info1.ALBUM.nome) < 0)
-                maior = inserirNo(&((*R)->esq), info, *R, sobe, inserido);
+                maior = inserirNo(&((*R)->esq), info, *R, sobe, inserido, tipo);
             else if ((*R)->nInfos == 1 || strcmp(info.ALBUM.nome, (*R)->info2.ALBUM.nome) < 0)
-                maior = inserirNo(&((*R)->cen), info, *R, sobe, inserido);
+                maior = inserirNo(&((*R)->cen), info, *R, sobe, inserido, tipo);
             else
-                maior = inserirNo(&((*R)->dir), info, *R, sobe, inserido);
+                maior = inserirNo(&((*R)->dir), info, *R, sobe, inserido, tipo);
         }
 
         if (maior) {
@@ -168,9 +171,9 @@ Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe, int 
                 adicionaInfo(R, *sobe, maior);
                 maior = NULL;
             } else {
-                maior = quebrarNo(R, *sobe, maior, sobe);
+                maior = quebrarNo(R, *sobe, maior, sobe, tipo);
                 if (!Pai) {
-                    *R = criaNo(*sobe, *R, maior);
+                    *R = criaNo(*sobe, *R, maior, tipo);
                     maior = NULL;
                 }
             }
@@ -220,17 +223,50 @@ int inserirMusica(Musica **lista, Musica *novaMusica){
     return inseriu;
 }
 
+int removerMusica(Musica **lista, char *titulo){
+    int removeu = 0;
+    if(*lista){
+        Musica *aux = *lista;
+        Musica *ant = NULL;
+
+        while(aux && strcmp(aux->titulo, titulo) != 0){
+            ant = aux;
+            aux = aux->prox;
+        }
+
+        if(aux){
+            Musica *l = inicializarM();
+            if(ant == NULL){
+                l = *lista;
+                free(l);
+                *lista = aux->prox;
+            }else{
+                l = aux;
+                ant->prox = aux->prox;
+                free(l);
+            }
+            removeu = 1;
+        }
+    }
+    return (removeu);
+}
+
+
 int buscarNaArvore23(Arvore *raiz, char *nome, Arvore **busca){
     int nInfoBusca = 0;
     if(raiz){
-        int compInfo1 = 2, compInfo2 = 2;
-
-        compInfo1 = strcmp(nome, (raiz->tipo == ARTISTA) ? raiz->info1.ARTISTA.nome : raiz->info1.ALBUM.nome);
-        compInfo2 = strcmp(nome, (raiz->tipo == ARTISTA) ? raiz->info2.ARTISTA.nome : raiz->info2.ALBUM.nome);
-
-        if(raiz->nInfos == 2)
-            compInfo2 = strcmp(nome, raiz->info2.ALBUM.nome);
-
+        int compInfo1, compInfo2;
+       
+        if (raiz->tipo == ARTISTA) {
+            compInfo1 = strcmp(nome, raiz->info1.ARTISTA.nome);
+            if (raiz->nInfos == 2)
+                compInfo2 = strcmp(nome, raiz->info2.ARTISTA.nome);
+        } else{
+            compInfo1 = strcmp(nome, raiz->info1.ALBUM.nome);
+            if (raiz->nInfos == 2)
+                compInfo2 = strcmp(nome, raiz->info2.ALBUM.nome);
+        }
+            
         if(compInfo1 == 0){
             *busca = raiz;
             nInfoBusca = 1;
@@ -238,11 +274,13 @@ int buscarNaArvore23(Arvore *raiz, char *nome, Arvore **busca){
                 *busca = raiz;
                 nInfoBusca = 2;
         }else{
-            if(compInfo1 < 0)
+            if(compInfo1 < 0){
                 nInfoBusca = buscarNaArvore23(raiz->esq, nome, busca);
+            }
             else{
-                if(raiz->nInfos == 1)
+                if(raiz->nInfos == 1){
                     nInfoBusca = buscarNaArvore23(raiz->cen, nome, busca);
+                }                    
                 else if(compInfo2 < 0)
                     nInfoBusca = buscarNaArvore23(raiz->cen, nome, busca);
                 else nInfoBusca = buscarNaArvore23(raiz->dir, nome, busca);
@@ -306,9 +344,9 @@ Musica *buscarMusicaDeAlbum(DadoUnion *album, char *tituloAlbum, char *tituloMus
 }
 
 void buscarMusicaEmAlbuns(Arvore *albuns, Musica **busca, char *tituloMusica) {
-    if(albuns && !busca){
+    if(albuns && !(*busca)){
         *busca = buscarMusicaDeAlbum(&(albuns->info1), albuns->info1.ALBUM.nome, tituloMusica);
-        if(albuns->nInfos == 2 && !busca)
+        if(albuns->nInfos == 2 && !(*busca))
             *busca = buscarMusicaDeAlbum(&(albuns->info2), albuns->info2.ALBUM.nome, tituloMusica);
         buscarMusicaEmAlbuns(albuns->esq, busca, tituloMusica);
         buscarMusicaEmAlbuns(albuns->cen, busca, tituloMusica);
@@ -332,24 +370,18 @@ Musica *buscarMusicaDeArtista(Arvore *artistas, char *nomeArtista, char *tituloM
 
 void mostrarArtistasPorEstilo(Arvore *artistas, char *estilo) {
     if (artistas){
-        int compInfo1 = 2, compInfo2 = 2;
+    if (strcmp(estilo, artistas->info1.ARTISTA.estiloMusical) == 0) 
+        printf("%s (%s)\n", artistas->info1.ARTISTA.nome, artistas->info1.ARTISTA.estiloMusical);
 
-        compInfo1 = strcmp(estilo, artistas->info1.ARTISTA.estiloMusical);
-        if(artistas->nInfos == 2)
-            compInfo2 = strcmp(estilo, artistas->info2.ARTISTA.estiloMusical);
+    if (artistas->nInfos == 2 && strcmp(estilo, artistas->info2.ARTISTA.estiloMusical) == 0) 
+        printf("%s (%s)\n", artistas->info2.ARTISTA.nome, artistas->info2.ARTISTA.estiloMusical);
 
-        if(compInfo1 == 0){
-            printf("%s (%s)\n", artistas->info1.ARTISTA.nome, artistas->info1.ARTISTA.estiloMusical);
-        }else if(compInfo2 != 2 && compInfo2 == 0){
-            printf("%s (%s)\n", artistas->info2.ARTISTA.nome, artistas->info2.ARTISTA.estiloMusical);
-        }else{
-            if(compInfo1 < 0)
-                mostrarArtistasPorEstilo(artistas->esq, estilo);
-            else if(artistas->nInfos == 1 || (compInfo2 != 2 && compInfo2 < 0))
-                mostrarArtistasPorEstilo(artistas->cen, estilo);
-            else mostrarArtistasPorEstilo(artistas->dir, estilo);
-        }
+    mostrarArtistasPorEstilo(artistas->esq, estilo);
+    mostrarArtistasPorEstilo(artistas->cen, estilo);
+    mostrarArtistasPorEstilo(artistas->dir, estilo);
     }
+
+    
 }
 
 void mostraArtista(Arvore *raiz){
@@ -426,14 +458,14 @@ void mostrarAlbunsDeArtista(Arvore *artistas, char *nomeArtista){
     int nInfoBuscada = buscarNaArvore23(artistas, nomeArtista, &artista);
     if(artista){
         if(nInfoBuscada == 1){
-            printf("\n=== Álbuns de %s ===\n", artista->info1.ARTISTA.nome);
+            printf("\n=== Albuns de %s ===\n", artista->info1.ARTISTA.nome);
             imprimirArvore23(artista->info1.ARTISTA.albuns);
         }else{
-            printf("\n=== Álbuns de %s ===\n", artista->info2.ARTISTA.nome);
+            printf("\n=== Albuns de %s ===\n", artista->info2.ARTISTA.nome);
             imprimirArvore23(artista->info2.ARTISTA.albuns);
         }
         
-    }else printf("Artista não encontrado.\n");
+    }else printf("Artista nao encontrado.\n");
 }
 
 void mostrarMusicasDeAlbum(DadoUnion *album){

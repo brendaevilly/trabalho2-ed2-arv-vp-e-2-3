@@ -92,10 +92,6 @@ void mostrarAlbunsDeArtista(Arvore *raiz, char *nomeArtista);
 void mostrarMusicasDeAlbum(Arvore *raiz);
 void mostrarArtistasPorEstilo(Arvore *raiz, char *estiloMusical);
 void mostrarMusicasDeArtista(Arvore *raiz, char *nomeArtista);
-void mostrarMusicaDeArtista(Arvore *raiz, char *nomeArtista, char *tituloMusica);
-
-/* --- Experimento --- */
-void experimentoBusca30(Arvore *raiz);
 
 /* --- Utilitários --- */
 void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes);

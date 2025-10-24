@@ -51,12 +51,13 @@ Musica *alocarM();
 int ehFolha(Arvore *R);
 void preencheInfo(TipoDado tipo, DadoUnion *info);
 
-Arvore *criaNo(DadoUnion info, Arvore *Fesq, Arvore *Fcen);
+Arvore *criaNo(DadoUnion info, Arvore *Fesq, Arvore *Fcen, TipoDado tipo);
 void adicionaInfo(Arvore **no, DadoUnion info, Arvore *filho);
-Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe, int *inserido);
-Arvore *quebrarNo(Arvore **no, DadoUnion info, Arvore *filho, DadoUnion *sobe);
+Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe, int *inserido, TipoDado tipo);
+Arvore *quebrarNo(Arvore **no, DadoUnion info, Arvore *filho, DadoUnion *sobe, TipoDado tipo);
 void preencherMusica(Musica *musica);
 int inserirMusica(Musica **lista, Musica *novaMusica);
+int removerMusica(Musica **lista, char *titulo);
 
 int buscarNaArvore23(Arvore *raiz, char *nome, Arvore **busca);
 Musica *buscarMusica(Musica *lista, char *titulo);
