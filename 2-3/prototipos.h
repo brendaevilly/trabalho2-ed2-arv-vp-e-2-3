@@ -53,7 +53,7 @@ void preencheInfo(TipoDado tipo, DadoUnion *info);
 
 Arvore *criaNo(DadoUnion info, Arvore *Fesq, Arvore *Fcen);
 void adicionaInfo(Arvore **no, DadoUnion info, Arvore *filho);
-Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe);
+Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe, int *inserido);
 Arvore *quebrarNo(Arvore **no, DadoUnion info, Arvore *filho, DadoUnion *sobe);
 void preencherMusica(Musica *musica);
 int inserirMusica(Musica **lista, Musica *novaMusica);

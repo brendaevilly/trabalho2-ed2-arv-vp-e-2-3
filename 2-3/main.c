@@ -47,74 +47,115 @@ int main(){
 
         switch(opcao){
             case 1: {
+                int inserido = 0;
                 DadoUnion info;
                 preencheInfo(ARTISTA, &info);
-                inserirNo(&biblioteca, info, NULL, &sobe);
-            }
-/*
 
-case 2: {
-                char nomeArtista[100];
-                printf("Digite o nome do artista: ");
-                scanf(" %[^\n]", nomeArtista);
-                deixarMaiusculo(nomeArtista);
+                Arvore *busca = inicializar();
+                int nInfoBuscada = buscarNaArvore23(biblioteca, info.ARTISTA.nome, &busca);
+                if(!busca){
+                    inserirNo(&biblioteca, info, NULL, &sobe, &inserido);
+                    if(inserido) printf("\n Artista cadastrado com sucesso!\n");
+                    else printf("\n Erro ao cadastrar artista.\n");
+                } else printf("\n Artista ja cadastrado.\n");
 
-                Arvore *artista = buscarArvRubroNegra(biblioteca, nomeArtista);
-                if(artista){
-                    Arvore *novoAlbum = alocarTree(ALBUM);
-                    if(novoAlbum != NULL){
-                        preencherNo(novoAlbum);
-                        if(inserirArvore(&artista->dado.ARTISTA.albuns, novoAlbum)){
-                            artista->dado.ARTISTA.numeroAlbuns++;
-                            atualizaCorRaiz(&artista->dado.ARTISTA.albuns);
-                            printf("\n Album cadastrado com sucesso!\n");
-                        } else {
-                            printf("\n Erro ao cadastrar album.\n");
-                        }
-                    }
-                } else {
-                    printf("\n Artista nao encontrado!\n");
-                }
                 break;
             }
-            case 3: { // CADASTRAR MÚSICA
-                char nomeArtista[100], tituloAlbum[100];
+            case 2: {
+                char nomeArtista[50];
                 printf("Digite o nome do artista: ");
                 scanf(" %[^\n]", nomeArtista);
                 deixarMaiusculo(nomeArtista);
 
-                Arvore *artista = buscarArvRubroNegra(biblioteca, nomeArtista);
+                Arvore *busca = NULL;
+                int nInfoBuscada = buscarNaArvore23(biblioteca, nomeArtista, &busca);
+                if(busca){
+                    DadoUnion info;
+                    preencheInfo(ALBUM, &info);
+
+                    Arvore *album = NULL;
+                    
+                    if(nInfoBuscada == 1)
+                        buscarNaArvore23(busca->info1.ARTISTA.albuns, info.ALBUM.nome, &album);
+                    else
+                        buscarNaArvore23(busca->info2.ARTISTA.albuns, info.ALBUM.nome, &album);
+
+                    if(!album){
+                        int inserido = 0;
+                        if(nInfoBuscada == 1){
+                            inserirNo(&(busca->info1.ARTISTA.albuns), info, NULL, &sobe, &inserido);
+                            if(inserido){
+                                busca->info1.ARTISTA.numeroAlbuns++;
+                                printf("\n Album cadastrado com sucesso!\n");
+                            } 
+                            else printf("\n Erro ao cadastrar album.\n");
+                            
+                        } 
+                        else{
+                            inserirNo(&(busca->info2.ARTISTA.albuns), info, NULL, &sobe, &inserido);
+                            if(inserido){
+                                busca->info2.ARTISTA.numeroAlbuns++;
+                                printf("\n Album cadastrado com sucesso!\n");
+                            } 
+                            else printf("\n Erro ao cadastrar album.\n");
+                        }
+                    } else printf("\n Album ja cadastrado para este artista.\n");
+                } else printf("\n Artista nao encontrado!\n");
+                break;
+            } 
+            case 3: { // CADASTRAR MÚSICA
+                char nomeArtista[50], tituloAlbum[50];
+                printf("Digite o nome do artista: ");
+                scanf(" %[^\n]", nomeArtista);
+                deixarMaiusculo(nomeArtista);
+
+                int nInfoBuscada;
+                Arvore *artista = inicializar();
+                nInfoBuscada = buscarNaArvore23(biblioteca, nomeArtista, &artista);
                 if (artista) {
                     printf("Digite o titulo do album: ");
                     scanf(" %[^\n]", tituloAlbum);
-
                     deixarMaiusculo(tituloAlbum);
 
-                    Arvore *album = inicializar();
-                    buscarAlbumDeArtista(artista, tituloAlbum, &album);
+                    DadoUnion art;
+                    if(nInfoBuscada == 1)art = artista->info1;
+                    else art = artista->info2;
+
+                    Arvore *album = NULL;
+                    int nInfoAlbum = buscarNaArvore23(art.ARTISTA.albuns, tituloAlbum, &album);
+
+                    printf("%s\n", art.ARTISTA.albuns->info1.ALBUM.nome);
 
                     if (album) {
-                        Musica *novaMusica = alocarMusica();
-                        if (novaMusica != NULL) {
-                            preencherMusica(novaMusica);
-                            if (inserirMusica(&album->dado.ALBUM.musicas, novaMusica)) {
-                                album->dado.ALBUM.numeroMusicas++;
+                        Musica *novaMusica = alocarM();
+                        preencherMusica(novaMusica);    
+
+                        if(nInfoAlbum == 1){
+                            int inserido = inserirMusica(&(album->info1.ALBUM.musicas), novaMusica);
+                            if(inserido){
+                                album->info1.ALBUM.numeroMusicas++;
                                 printf("\n Musica cadastrada com sucesso!\n");
                             } else {
                                 printf("\n Erro ao cadastrar musica.\n");
+                                free(novaMusica);
+                            }
+                        } else {
+                            int inserido = inserirMusica(&(album->info2.ALBUM.musicas), novaMusica);
+                            if(inserido){
+                                album->info2.ALBUM.numeroMusicas++;
+                                printf("\n Musica cadastrada com sucesso!\n");
+                            } else {
+                                printf("\n Erro ao cadastrar musica.\n");
+                                free(novaMusica);
                             }
                         }
-                    } else {
-                        printf("\n Album nao encontrado.\n");
-                    }
-                } else {
-                    printf("\n Artista nao encontrado.\n");
-                }
+                    } else printf("\n Album nao encontrado.\n");
+                } else printf("\n Artista nao encontrado.\n");
                 break;
 
-            }
+            } 
             case 4: { // LISTAR ARTISTAS
-                imprimirArvRubroNegra(biblioteca);
+                imprimirArvore23(biblioteca);
                 break;
             }
             case 5: { // MOSTRAR ÁLBUNS DE ARTISTA
@@ -124,7 +165,7 @@ case 2: {
                 deixarMaiusculo(nome);
                 mostrarAlbunsDeArtista(biblioteca, nome);
                 break;
-            }
+            }/*
             case 6: { // MOSTRAR MÚSICAS DE UM ÁLBUM
                 char nome[100], nalbum[100];
                 printf("Digite o nome do artista: ");
