@@ -498,16 +498,11 @@ void liberarArvore(Arvore *raiz){
     if(raiz){
         liberarArvore(raiz->esq);
         liberarArvore(raiz->dir);
+
+        if(raiz->tipo == ARTISTA) liberarArvore(raiz->dado.ARTISTA.albuns);
+
+        if(raiz->tipo == ALBUM) liberarMusicas(raiz->dado.ALBUM.musicas);
+
         free(raiz);
     }
-}
-
-void liberarAlbuns(Arvore *albuns){
-    if (albuns) {
-        liberarAlbuns(albuns->esq);
-        liberarAlbuns(albuns->dir);
-        liberarMusicas(albuns->dado.ALBUM.musicas);
-    }
-
-    liberarArvore(albuns);
 }

@@ -96,7 +96,6 @@ void mostrarMusicasDeArtista(Arvore *raiz, char *nomeArtista);
 /* --- Utilitários --- */
 void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes);
 void liberarMusicas(Musica *lista);
-void liberarAlbuns(Arvore *albuns);
 void liberarArvore(Arvore *raiz);
 
 #endif

@@ -7,7 +7,7 @@ struct musica;
 struct arvore;
 
 typedef enum {ARTISTA, ALBUM} TipoDado;
-typedef enum {CANTOR, DUPLA, BANDA, GRUPO} TipoArtista;
+typedef enum {CANTOR = 1, DUPLA, BANDA, GRUPO} TipoArtista;
 typedef enum {VERMELHO, PRETO} Cor;
 
 typedef struct artista{
@@ -52,7 +52,7 @@ int ehFolha(Arvore *R);
 void preencheInfo(TipoDado tipo, DadoUnion *info);
 
 Arvore *criaNo(DadoUnion info, Arvore *Fesq, Arvore *Fcen, TipoDado tipo);
-void adicionaInfo(Arvore **no, DadoUnion info, Arvore *filho);
+int adicionaInfo(Arvore **no, DadoUnion info, Arvore *filho);
 Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe, int *inserido, TipoDado tipo);
 Arvore *quebrarNo(Arvore **no, DadoUnion info, Arvore *filho, DadoUnion *sobe, TipoDado tipo);
 void preencherMusica(Musica *musica);
