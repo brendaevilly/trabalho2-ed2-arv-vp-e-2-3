@@ -506,3 +506,31 @@ void liberarArvore(Arvore *raiz){
         free(raiz);
     }
 }
+
+void imprimirEstruturaArvoreRN(Arvore *raiz, int nivel, char *posicao) {
+    if (raiz == NULL) {
+        for (int i = 0; i < nivel; i++) {
+            printf("  ");
+        }
+        printf("Nivel %d - Posicao: %s - [NO NULO]\n", nivel, posicao);
+    }else{
+        for (int i = 0; i < nivel; i++) {
+            printf("  ");
+        }
+
+        printf("Nivel %d - Posicao: %s - Cor: %s - Tipo: %s - ", 
+            nivel, posicao, (raiz->cor == VERMELHO ? "VERMELHO" : "PRETO"), 
+            (raiz->tipo == ARTISTA ? "ARTISTA" : "ALBUM"));
+
+
+        if (raiz->tipo == ARTISTA) {
+            printf("Nome: %s (Estilo: %s)\n", raiz->dado.ARTISTA.nome, raiz->dado.ARTISTA.estiloMusical);
+        } else {  // ALBUM
+            printf("Titulo: %s (Ano: %d)\n", raiz->dado.ALBUM.titulo, raiz->dado.ALBUM.anoLancamento);
+        }
+
+        imprimirEstruturaArvoreRN(raiz->esq, nivel + 1, "ESQUERDA");
+        imprimirEstruturaArvoreRN(raiz->dir, nivel + 1, "DIREITA");
+        }  
+}
+

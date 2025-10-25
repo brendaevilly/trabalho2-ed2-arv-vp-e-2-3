@@ -97,5 +97,6 @@ void mostrarMusicasDeArtista(Arvore *raiz, char *nomeArtista);
 void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes);
 void liberarMusicas(Musica *lista);
 void liberarArvore(Arvore *raiz);
+void imprimirEstruturaArvoreRN(Arvore *raiz, int nivel, char *posicao);
 
 #endif

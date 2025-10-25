@@ -51,6 +51,8 @@ int main(){
                     if(inserirArvore(&biblioteca, novoArtista)){
                         atualizaCorRaiz(&biblioteca);
                         printf("\n Artista cadastrado com sucesso!\n");
+
+                        imprimirEstruturaArvoreRN(biblioteca, 0, "RAIZ");
                     }else printf("\n Erro ao cadastrar artista.\n");
                 }
                 break;
@@ -273,8 +275,15 @@ int main(){
                 scanf(" %[^\n]", nomeArtista);
     
                 deixarMaiusculo(nomeArtista);
-                if(removerArvRubroNegra(&biblioteca, nomeArtista))
-                    printf("Artista %s removido com sucesso!\n", nomeArtista);
+                printf("\n---- ARVORE ANTES DA REMOCAO ----\n");
+                imprimirEstruturaArvoreRN(biblioteca, 0, "RAIZ");
+                
+                if(removerArvRubroNegra(&biblioteca, nomeArtista)){
+                    printf("\nArtista %s removido com sucesso!\n", nomeArtista);
+
+                    printf("\n---- ARVORE DEPOIS DA REMOCAO ----\n");
+                    imprimirEstruturaArvoreRN(biblioteca, 0, "RAIZ");
+                }  
                 else printf("Artista nao encontrado.\n");
             }
             case 0:
