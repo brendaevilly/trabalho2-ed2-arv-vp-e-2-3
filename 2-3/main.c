@@ -42,7 +42,6 @@ int main(){
     DadoUnion sobe;
 
     do {
-        DadoUnion sobe;
         menu();
         scanf("%d", &opcao);
 
@@ -60,7 +59,6 @@ int main(){
                     else printf("\n Erro ao cadastrar artista.\n");
                 } else{
                     printf("\n Artista ja cadastrado.\n");
-                    printf("%s\n", busca->info1.ARTISTA.nome);
                 } 
 
                 break;
@@ -321,22 +319,38 @@ int main(){
                 } else printf("\n Artista nao encontrado.\n");
 
                 break;
-            }/*
+            }
             case 13: {
                 char nomeAlbum[100], nomeArtista[100];
                 printf("Digite o nome do artista: ");
                 scanf(" %[^\n]", nomeArtista);
                 deixarMaiusculo(nomeArtista);
 
-                Arvore *artista = buscarArvRubroNegra(biblioteca, nomeArtista);
+                Arvore *artista = inicializar();
+                int nInfoBuscada = buscarNaArvore23(biblioteca, nomeArtista, &artista);
                 if(artista){
                     printf("Digite o nome do album a ser removido: ");
                     scanf(" %[^\n]", nomeAlbum);
 
                     deixarMaiusculo(nomeAlbum);
-                    if(removerArvRubroNegra(&(artista->dado.ARTISTA.albuns), nomeAlbum))
-                        printf("Album %s removido com sucesso!\n", nomeAlbum);
-                    else printf("Album nao encontrado.\n");
+                    Arvore *album;
+                    int nInfoA;
+                    if(nInfoBuscada == 1) album = buscarAlbumDeArtista(&artista->info1, nomeAlbum, &nInfoA);
+                    else album = buscarAlbumDeArtista(&artista->info2, nomeAlbum, &nInfoA);
+
+                    if(album){
+                        Arvore *pai;
+                        pai = NULL;
+                        if(nInfoBuscada == 1){
+                            if(nInfoA == 1) removerArvore23(&artista->info1.ARTISTA.albuns, &pai, &album->info1);
+                            else if(nInfoA == 1) removerArvore23(&artista->info1.ARTISTA.albuns, &pai, &album->info2);
+                        }else{
+                            if(nInfoA == 1) removerArvore23(&artista->info2.ARTISTA.albuns, &pai, &album->info1);
+                            else if(nInfoA == 1) removerArvore23(&artista->info2.ARTISTA.albuns, &pai, &album->info2);
+                        }
+
+                        printf("Album removido.\n");
+                    } else printf("ALbum nao econtrado.\n");
                 } else printf("Artista nao encontrado.\n");
                 
                 break;
@@ -347,13 +361,19 @@ int main(){
                 scanf(" %[^\n]", nomeArtista);
     
                 deixarMaiusculo(nomeArtista);
-                if(removerArvRubroNegra(&biblioteca, nomeArtista))
-                    printf("Artista %s removido com sucesso!\n", nomeArtista);
-                else printf("Artista nao encontrado.\n");
-            }
-*/
+                Arvore *artista = inicializar();
+                int nInfoBuscada = buscarNaArvore23(biblioteca, nomeArtista, &artista);
 
-            
+                if(artista){
+                    Arvore *pai;
+                    pai = NULL;
+                    if(nInfoBuscada == 1)
+                        removerArvore23(&biblioteca, &pai, &artista->info1);
+                    else removerArvore23(&biblioteca, &pai, &artista->info2);
+
+                    printf("Artista removido.\n");
+                }else printf("Artista nao encontrado.\n");
+            }            
             case 0:
                 printf("\n Encerrando o programa...\n");
                 break;

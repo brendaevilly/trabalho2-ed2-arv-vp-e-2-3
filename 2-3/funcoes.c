@@ -137,13 +137,10 @@ Arvore *quebrarNo(Arvore **no, DadoUnion info, Arvore *filho, DadoUnion *sobe, T
 
 Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe, int *inserido, TipoDado tipo) {
     Arvore *maior = inicializar();
-
     if (!(*R)) {
         *R = criaNo(info, NULL, NULL, tipo);
         *inserido = 1; // nó criado, inserção aconteceu
     } else {
-        printf("%s\n", (*R)->info1.ARTISTA.nome);
-        if((*R)->nInfos == 2) printf("%s\n", (*R)->info2.ARTISTA.nome);
         if (ehFolha(*R)) {
             if ((*R)->nInfos == 1) {
                 adicionaInfo(R, info, NULL);
@@ -158,9 +155,9 @@ Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe, int 
             }
         } else {
             // Escolhe subárvore de inserção
-            if (strcmp(info.ALBUM.nome, (*R)->info1.ALBUM.nome) < 0)
+            if (strcmp(info.ARTISTA.nome, (*R)->info1.ARTISTA.nome) < 0)
                 maior = inserirNo(&((*R)->esq), info, *R, sobe, inserido, tipo);
-            else if ((*R)->nInfos == 1 || strcmp(info.ALBUM.nome, (*R)->info2.ALBUM.nome) < 0)
+            else if ((*R)->nInfos == 1 || strcmp(info.ARTISTA.nome, (*R)->info2.ARTISTA.nome) < 0)
                 maior = inserirNo(&((*R)->cen), info, *R, sobe, inserido, tipo);
             else
                 maior = inserirNo(&((*R)->dir), info, *R, sobe, inserido, tipo);
