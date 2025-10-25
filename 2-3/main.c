@@ -52,7 +52,10 @@ int main(){
                 preencheInfo(ARTISTA, &info);
 
                 inserirNo(&biblioteca, info, NULL, &sobe, &inserido, ARTISTA);
-                if(inserido) printf("\n Artista cadastrado com sucesso!\n");
+                if(inserido){
+                    printf("\n Artista cadastrado com sucesso!\n");
+                    imprimirEstruturaArvore23(biblioteca, 0, "RAIZ");
+                } 
                 else printf("\n Erro ao cadastrar artista.\n");
 
                 break;
@@ -364,13 +367,19 @@ int main(){
                 int nInfoBuscada = buscarNaArvore23(biblioteca, nomeArtista, &artista);
 
                 if(nInfoBuscada){
+                    printf("\n---- ARVORE ANTES DA REMOÇÃO ----\n");
+                    imprimirEstruturaArvore23(biblioteca, 0, "RAIZ");
+
                     Arvore *pai;
                     pai = NULL;
                     if(nInfoBuscada == 1)
                         removerArvore23(&biblioteca, &pai, &artista->info1);
                     else removerArvore23(&biblioteca, &pai, &artista->info2);
 
-                    printf("Artista removido.\n");
+                    printf("\nArtista removido.\n");
+
+                    printf("\n---- ARVORE DEPOIS DA REMOÇÃO ----\n");
+                    imprimirEstruturaArvore23(biblioteca, 0, "RAIZ");
                 }else printf("Artista nao encontrado.\n");
                 break;
             }            

@@ -226,6 +226,51 @@ Arvore *inserirNo(Arvore **R, DadoUnion info, Arvore *Pai, DadoUnion *sobe, int 
 }
 
 
+void imprimirEstruturaArvore23(Arvore *raiz, int nivel, char *posicao) {
+    if (raiz) {
+        // Indentação para o nível
+        for (int i = 0; i < nivel; i++) {
+            printf("  ");
+        }
+        // Imprime o nível, posição, tipo e nInfos
+        printf("Nivel %d - Posicao: %s - Tipo: %s, nInfos: %d\n", nivel, posicao, (raiz->tipo == ARTISTA ? "ARTISTA" : "ALBUM"), raiz->nInfos);
+
+        // Indentação extra para as infos
+        for (int i = 0; i < nivel + 1; i++) {
+            printf("  ");
+        }
+
+        // Imprime info1
+        if (raiz->tipo == ARTISTA) {
+            printf("Info1: %s (Estilo: %s)\n", raiz->info1.ARTISTA.nome, raiz->info1.ARTISTA.estiloMusical);
+        } else {
+            printf("Info1: %s (Ano: %d)\n", raiz->info1.ALBUM.nome, raiz->info1.ALBUM.anoLancamento);
+        }
+
+        // Imprime info2 se existir
+        if (raiz->nInfos == 2) {
+            for (int i = 0; i < nivel + 1; i++) {
+                printf("  ");
+            }
+            if (raiz->tipo == ARTISTA) {
+                printf("Info2: %s (Estilo: %s)\n", raiz->info2.ARTISTA.nome, raiz->info2.ARTISTA.estiloMusical);
+            } else {
+                printf("Info2: %s (Ano: %d)\n", raiz->info2.ALBUM.nome, raiz->info2.ALBUM.anoLancamento);
+            }
+        }
+
+        // Recursão para filhos com posições
+        imprimirEstruturaArvore23(raiz->esq, nivel + 1, "ESQUERDA");
+        imprimirEstruturaArvore23(raiz->cen, nivel + 1, "CENTRO");
+        if (raiz->nInfos == 2) {
+            imprimirEstruturaArvore23(raiz->dir, nivel + 1, "DIREITA");
+        }
+    }
+
+    
+}
+
+
 void preencherMusica(Musica *musica) {
     if(musica != NULL){
         printf("\n=== Cadastro de Música ===\n");
