@@ -393,17 +393,18 @@ void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes){
         int compInfo1 = 2, compInfo2 = 2;
 
         compInfo1 = strcmp(nome, raiz->info1.ARTISTA.nome);
-        printf(" -> [%s]", raiz->info1.ALBUM.nome);
+        printf(" -> [%s]", raiz->info1.ARTISTA.nome);
         (*comparacoes)++;
 
-        if(raiz->nInfos == 2)
+        if(raiz->nInfos == 2){
             compInfo2 = strcmp(nome, raiz->info2.ARTISTA.nome);
             printf(" -> [%s]", raiz->info2.ALBUM.nome);
             (*comparacoes)++;
-
+        }
+            
         if(compInfo1 == 0){
             printf("  [ENCONTRADO]\n");
-        }else if(compInfo2 != 2 && compInfo2 == 0){
+        }else if(compInfo2 == 0){
             printf("  [ENCONTRADO]\n");
         }else{
             if(compInfo1 < 0)
@@ -412,7 +413,7 @@ void mostrarCaminhoBusca(Arvore *raiz, char *nome, int *comparacoes){
                 mostrarCaminhoBusca(raiz->cen, nome, comparacoes);
             else mostrarCaminhoBusca(raiz->dir, nome, comparacoes);
         }
-    }
+    }else printf("[NAO ENCONTRADO]\n");
 }
 
 Arvore *buscarAlbumDeArtista(DadoUnion *artista, char *tituloAlbum, int *nInfoBuscada) {
