@@ -843,16 +843,16 @@ void maiorFilhoEsq(Arvore **R, Arvore **maiorFilho, Arvore **paiM, int posicaoIn
                 if((*maiorFilho)->nInfos == 2){
                     (*R)->info1 = (*maiorFilho)->info2;
                     (*maiorFilho)->info2 = infoQueVaiSerRemovida;
-                }else{ 
+                }else{
                     (*R)->info1 = (*maiorFilho)->info1;
                     (*maiorFilho)->info1 = infoQueVaiSerRemovida;
                 }
-            }else if(posicaoInfoQueVaiSerRemovida == 2){ 
+            }else if(posicaoInfoQueVaiSerRemovida == 2){
                 infoQueVaiSerRemovida = (*R)->info2;
                 if((*maiorFilho)->nInfos == 2){
                     (*R)->info2 = (*maiorFilho)->info2;
                     (*maiorFilho)->info2 = infoQueVaiSerRemovida;
-                }else{ 
+                }else{
                     (*R)->info2 = (*maiorFilho)->info1;
                     (*maiorFilho)->info1 = infoQueVaiSerRemovida;
                 }
@@ -870,37 +870,80 @@ void maiorFilhoEsq(Arvore **R, Arvore **maiorFilho, Arvore **paiM, int posicaoIn
 }
 
 void removerArvore23(Arvore **R, Arvore **pai, DadoUnion *info){
-    int compInfo1 = 2, compInfo2 = 2;
-    if(*R){
+    int comp1, comp2;
+    if(!R || !(*R)){
+        balanceia(R, pai);
+        return;
+    }
+
+    if((*R)->tipo == ALBUM){
+        // compara por ALBUM.nome
         if(strcmp(info->ALBUM.nome, (*R)->info1.ALBUM.nome) == 0){
             if(ehFolha(*R)){
                 if((*R)->nInfos == 2){
                     (*R)->info1 = (*R)->info2;
                     (*R)->nInfos = 1;
-                }else (*R)->nInfos = 0;
-            }else{
+                } else {
+                    (*R)->nInfos = 0;
+                }
+            } else {
                 Arvore **maiorFilho = &((*R)->esq);
                 Arvore **paiM = R;
                 maiorFilhoEsq(R, maiorFilho, paiM, 1);
             }
-        }else if((*R)->nInfos == 2 && (strcmp(info->ALBUM.nome, (*R)->info2.ALBUM.nome)) == 0){
-            if(ehFolha(*R)) (*R)->nInfos = 1;
-            else{
+        } else if((*R)->nInfos == 2 && strcmp(info->ALBUM.nome, (*R)->info2.ALBUM.nome) == 0){
+            if(ehFolha(*R)){
+                (*R)->nInfos = 1;
+            } else {
                 Arvore **maiorFilho = &((*R)->cen);
                 Arvore **paiM = R;
                 maiorFilhoEsq(R, maiorFilho, paiM, 2);
             }
-        }else{
-            compInfo1 = strcmp(info->ARTISTA.nome, (*R)->info1.ARTISTA.nome);
-            if((*R)->nInfos == 2)
-                compInfo2 = strcmp(info->ARTISTA.nome, (*R)->info2.ARTISTA.nome);
+        } else {
+            comp1 = strcmp(info->ALBUM.nome, (*R)->info1.ALBUM.nome);
+            comp2 = ((*R)->nInfos == 2) ? strcmp(info->ALBUM.nome, (*R)->info2.ALBUM.nome) : 2;
 
-            if(compInfo1 < 0)
+            if(comp1 < 0)
                 removerArvore23(&((*R)->esq), R, info);
-            else if((*R)->nInfos == 1 || (compInfo2 != 2 && compInfo2 < 0))
+            else if((*R)->nInfos == 1 || (comp2 != 2 && comp2 < 0))
                 removerArvore23(&((*R)->cen), R, info);
-            else removerArvore23(&((*R)->dir), R, info);
-        }    
+            else
+                removerArvore23(&((*R)->dir), R, info);
+        }
+    } else { // ARTISTA
+        // compara por ARTISTA.nome
+        if(strcmp(info->ARTISTA.nome, (*R)->info1.ARTISTA.nome) == 0){
+            if(ehFolha(*R)){
+                if((*R)->nInfos == 2){
+                    (*R)->info1 = (*R)->info2;
+                    (*R)->nInfos = 1;
+                } else {
+                    (*R)->nInfos = 0;
+                }
+            } else {
+                Arvore **maiorFilho = &((*R)->esq);
+                Arvore **paiM = R;
+                maiorFilhoEsq(R, maiorFilho, paiM, 1);
+            }
+        } else if((*R)->nInfos == 2 && strcmp(info->ARTISTA.nome, (*R)->info2.ARTISTA.nome) == 0){
+            if(ehFolha(*R)){
+                (*R)->nInfos = 1;
+            } else {
+                Arvore **maiorFilho = &((*R)->cen);
+                Arvore **paiM = R;
+                maiorFilhoEsq(R, maiorFilho, paiM, 2);
+            }
+        } else {
+            comp1 = strcmp(info->ARTISTA.nome, (*R)->info1.ARTISTA.nome);
+            comp2 = ((*R)->nInfos == 2) ? strcmp(info->ARTISTA.nome, (*R)->info2.ARTISTA.nome) : 2;
+
+            if(comp1 < 0)
+                removerArvore23(&((*R)->esq), R, info);
+            else if((*R)->nInfos == 1 || (comp2 != 2 && comp2 < 0))
+                removerArvore23(&((*R)->cen), R, info);
+            else
+                removerArvore23(&((*R)->dir), R, info);
+        }
     }
 
     balanceia(R, pai);
