@@ -100,3 +100,12 @@ void liberarArvore(Arvore *raiz);
 void imprimirEstruturaArvoreRN(Arvore *raiz, int nivel, char *posicao);
 
 #endif
+
+
+/*
+
+--- RESULTADOS
+Media de comparacoes: 4.83
+Media de tempo: 0.000003 segundos
+
+*/
